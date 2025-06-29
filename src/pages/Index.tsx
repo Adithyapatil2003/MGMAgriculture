@@ -8,10 +8,13 @@ const Index = () => {
   const [selectedImage, setSelectedImage] = useState(0);
 
   const propertyImages = [
-    "https://images.unsplash.com/photo-1472396961693-142e6e269027?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1466721591366-2d5fba72006d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1493962853295-0fd70327578a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1465379944081-7f47de8d74ac?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    "/lovable-uploads/383bd408-e4a2-4387-84ad-2f48464d4a60.png",
+    "/lovable-uploads/7cc8736c-7a77-4093-8aeb-18b5536cb9e5.png",
+    "/lovable-uploads/7af551e0-637a-41cb-a322-992c62c0c03d.png",
+    "/lovable-uploads/e0ab70b9-5b12-48d5-b737-1656075cbf3b.png",
+    "/lovable-uploads/1b67c9a8-c6fe-4902-b3ba-8fa4075e48e0.png",
+    "/lovable-uploads/fd7cae1c-a932-46ca-8a69-0b84676cb7de.png",
+    "/lovable-uploads/96fd422a-dcb9-4dc7-921e-8b90418ae545.png"
   ];
 
   const plotDetails = [
@@ -179,7 +182,7 @@ const Index = () => {
                 />
               </div>
               <div className="grid grid-cols-4 gap-3">
-                {propertyImages.map((image, index) => (
+                {propertyImages.slice(0, 4).map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
@@ -195,6 +198,25 @@ const Index = () => {
                   </button>
                 ))}
               </div>
+              {propertyImages.length > 4 && (
+                <div className="grid grid-cols-3 gap-3 mt-3">
+                  {propertyImages.slice(4).map((image, index) => (
+                    <button
+                      key={index + 4}
+                      onClick={() => setSelectedImage(index + 4)}
+                      className={`relative h-20 rounded-lg overflow-hidden shadow-md transition-all duration-300 ${
+                        selectedImage === index + 4 ? 'ring-4 ring-green-500 scale-105' : 'hover:scale-105 hover:shadow-lg'
+                      }`}
+                    >
+                      <img 
+                        src={image} 
+                        alt={`Property view ${index + 5}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Property Specifications */}
