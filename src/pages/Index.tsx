@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -61,9 +60,14 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/60" />
         
         <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-          <Badge className="mb-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm">
-            FOR SALE
-          </Badge>
+          <div className="flex flex-wrap justify-center gap-3 mb-4">
+            <Badge className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm">
+              FOR SALE
+            </Badge>
+            <Badge className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm">
+              FOR LEASE
+            </Badge>
+          </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             Premium
             <span className="block text-green-400">Agricultural Land</span>
@@ -111,7 +115,7 @@ const Index = () => {
               Property <span className="text-green-600">Overview</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Discover the potential of this exceptional agricultural property, perfectly positioned for farming, investment, or development opportunities.
+              Discover the potential of this exceptional agricultural property, available for both purchase and lease arrangements to suit your farming or investment needs.
             </p>
           </div>
 
@@ -216,40 +220,61 @@ const Index = () => {
       <section className="py-20 bg-gradient-to-r from-green-600 to-green-800">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to <span className="text-green-200">Invest?</span>
+            Ready to <span className="text-green-200">Get Started?</span>
           </h2>
-          <p className="text-xl text-green-100 mb-12 leading-relaxed">
-            Don't miss this opportunity to own premium agricultural land. Contact us today for viewing arrangements and detailed information.
+          <p className="text-xl text-green-100 mb-8 leading-relaxed">
+            Don't miss this opportunity to own or lease premium agricultural land. Contact us today for viewing arrangements and detailed information.
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
-              <CardContent className="p-8 text-center">
-                <Phone className="h-12 w-12 mx-auto mb-4 text-green-200" />
-                <h3 className="text-2xl font-bold mb-2">Call Direct</h3>
-                <p className="text-green-100 mb-4">Speak with the property owner</p>
-                <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-3 rounded-full">
-                  +1 (555) 123-4567
+              <CardContent className="p-6 text-center">
+                <div className="flex justify-center gap-2 mb-4">
+                  <Badge className="bg-green-500 text-white">Sale</Badge>
+                  <Badge className="bg-blue-500 text-white">Lease</Badge>
+                </div>
+                <h3 className="text-xl font-bold mb-2">Purchase Options</h3>
+                <p className="text-green-100 mb-4">Full ownership or flexible lease terms available</p>
+                <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-2 rounded-full">
+                  Get Pricing Info
                 </Button>
               </CardContent>
             </Card>
 
             <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
-              <CardContent className="p-8 text-center">
-                <Mail className="h-12 w-12 mx-auto mb-4 text-green-200" />
-                <h3 className="text-2xl font-bold mb-2">Send Message</h3>
-                <p className="text-green-100 mb-4">Get detailed information via email</p>
-                <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-3 rounded-full">
-                  land@example.com
+              <CardContent className="p-6 text-center">
+                <Phone className="h-10 w-10 mx-auto mb-4 text-green-200" />
+                <h3 className="text-xl font-bold mb-2">Direct Contact</h3>
+                <p className="text-green-100 mb-4">Speak with the property owner</p>
+                <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-2 rounded-full">
+                  +1 (555) 123-4567
                 </Button>
               </CardContent>
             </Card>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-            <MapPin className="h-12 w-12 mx-auto mb-4 text-green-200" />
-            <h3 className="text-2xl font-bold mb-2 text-white">Property Location</h3>
-            <p className="text-green-100 text-lg">Rural Agricultural District, Perfect for Farming Operations</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
+              <CardContent className="p-6 text-center">
+                <Mail className="h-10 w-10 mx-auto mb-4 text-green-200" />
+                <h3 className="text-xl font-bold mb-2">Email Inquiry</h3>
+                <p className="text-green-100 mb-4">Get detailed information via email</p>
+                <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-2 rounded-full">
+                  land@example.com
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
+              <CardContent className="p-6 text-center">
+                <MapPin className="h-10 w-10 mx-auto mb-4 text-green-200" />
+                <h3 className="text-xl font-bold mb-2">Property Location</h3>
+                <p className="text-green-100 mb-4">Rural Agricultural District</p>
+                <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-2 rounded-full">
+                  View on Map
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -259,7 +284,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="mb-8">
             <h3 className="text-3xl font-bold mb-4">Premium Agricultural Land</h3>
-            <p className="text-gray-400 text-lg">19 Acres of Prime Farmland</p>
+            <p className="text-gray-400 text-lg">19 Acres • Available for Sale & Lease</p>
           </div>
           <div className="border-t border-gray-800 pt-8">
             <p className="text-gray-500">© 2024 Agricultural Land Sales. All rights reserved.</p>
