@@ -1,8 +1,9 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Car, Palmtree } from "lucide-react";
-import { useState } from "react";
+import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Car, Palmtree, IndianRupee } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -14,8 +15,27 @@ const Index = () => {
     "/lovable-uploads/e0ab70b9-5b12-48d5-b737-1656075cbf3b.png",
     "/lovable-uploads/1b67c9a8-c6fe-4902-b3ba-8fa4075e48e0.png",
     "/lovable-uploads/fd7cae1c-a932-46ca-8a69-0b84676cb7de.png",
-    "/lovable-uploads/96fd422a-dcb9-4dc7-921e-8b90418ae545.png"
+    "/lovable-uploads/96fd422a-dcb9-4dc7-921e-8b90418ae545.png",
+    "/lovable-uploads/b6686886-a8bc-437b-a614-d719dda7b250.png",
+    "/lovable-uploads/661f9528-c3c5-4d1d-8bd6-226cd8f6317f.png",
+    "/lovable-uploads/a5acc6da-2dc4-4dd7-b53e-94cbabddc9dc.png",
+    "/lovable-uploads/3a6dc2d7-3e73-41af-a601-b868e037d728.png",
+    "/lovable-uploads/1ed3ce05-3e41-4a5f-b230-fd53d6e59394.png",
+    "/lovable-uploads/4bd4ac96-1c1f-4b28-a8a7-d11b534b285c.png",
+    "/lovable-uploads/8b06a3dc-e1cd-4fee-ad49-bb27f8bce500.png",
+    "/lovable-uploads/76cc52fd-448a-406a-9baa-978084443292.png",
+    "/lovable-uploads/d4074998-23e4-43a0-bf9b-6092cfe2ab93.png",
+    "/lovable-uploads/ec258172-1a94-4364-b12b-96c84dd82762.png"
   ];
+
+  // Auto-change background images
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSelectedImage((prev) => (prev + 1) % propertyImages.length);
+    }, 4000); // Change every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [propertyImages.length]);
 
   const plotDetails = [
     { plot: "Plot 1", area: "6 acres 12 Gunthas", type: "Coconut Farm", description: "Large coconut plantation with mature trees" },
@@ -59,6 +79,37 @@ const Index = () => {
     { label: "Tree Height", value: "Tall, Mature Trees" }
   ];
 
+  const pricingOptions = [
+    {
+      type: "Rent",
+      price: "₹25,000-50,000",
+      period: "per acre/year",
+      advance: "₹1 lakh advance/security deposit",
+      description: "Annual rental with 1-year advance payment"
+    },
+    {
+      type: "Lease",
+      price: "₹10 lakhs",
+      period: "per acre for 5 years",
+      advance: "Long-term commitment",
+      description: "5-year lease agreement with full payment"
+    },
+    {
+      type: "Sale",
+      price: "₹1.5-2.5 lakhs",
+      period: "per guntha",
+      advance: "Full ownership",
+      description: "Complete ownership with clear title"
+    }
+  ];
+
+  const owners = [
+    { name: "Mohan M G", phone: "9448018544", email: "mg_mohan2003@yahoo.co.in" },
+    { name: "Nandini H J", phone: "8073984709", email: "" },
+    { name: "M Deepak", phone: "9480708440", email: "mm.deepak2003@gmail.com" },
+    { name: "", phone: "9845326568", email: "" }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50">
       {/* Hero Section */}
@@ -80,13 +131,19 @@ const Index = () => {
             <Badge className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm">
               FOR LEASE
             </Badge>
+            <Badge className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-sm">
+              FOR RENT
+            </Badge>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             Premium
             <span className="block text-green-400">Agricultural Land</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed">
+          <p className="text-xl md:text-2xl mb-4 text-gray-200 leading-relaxed">
             19 acres across 7 plots featuring coconut farms, paddy fields, and teak plantation
+          </p>
+          <p className="text-lg mb-8 text-green-200 leading-relaxed">
+            MUGTIHALLY & KAIDALA Villages, Nonavinakere, Tiptur Taluk, Tumkur District, Karnataka
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
@@ -94,14 +151,14 @@ const Index = () => {
               className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               <Phone className="mr-2 h-5 w-5" />
-              Contact Owner
+              Contact Owners
             </Button>
             <Button 
               variant="outline" 
               size="lg"
               className="border-white text-white hover:bg-white hover:text-green-800 px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
-              View Details
+              View Pricing
             </Button>
           </div>
         </div>
@@ -120,8 +177,51 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Plot Details Section */}
+      {/* Pricing Section */}
       <section className="py-20 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+              Pricing <span className="text-green-600">Options</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Flexible pricing options to suit your investment needs - rent, lease, or purchase.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {pricingOptions.map((option, index) => (
+              <Card key={index} className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg">
+                <CardHeader className="pb-4 text-center">
+                  <Badge className={`mx-auto mb-4 ${
+                    option.type === 'Rent' ? 'bg-blue-100 text-blue-800' :
+                    option.type === 'Lease' ? 'bg-purple-100 text-purple-800' :
+                    'bg-green-100 text-green-800'
+                  }`}>
+                    {option.type}
+                  </Badge>
+                  <CardTitle className="text-2xl font-bold text-gray-800 flex items-center justify-center">
+                    <IndianRupee className="h-6 w-6 mr-2 text-green-600" />
+                    {option.price}
+                  </CardTitle>
+                  <div className="text-lg text-gray-600">{option.period}</div>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <div className="font-semibold text-gray-800">{option.advance}</div>
+                  </div>
+                  <CardDescription className="text-gray-600 text-base">
+                    {option.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Plot Details Section */}
+      <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
@@ -200,7 +300,7 @@ const Index = () => {
               </div>
               {propertyImages.length > 4 && (
                 <div className="grid grid-cols-3 gap-3 mt-3">
-                  {propertyImages.slice(4).map((image, index) => (
+                  {propertyImages.slice(4, 7).map((image, index) => (
                     <button
                       key={index + 4}
                       onClick={() => setSelectedImage(index + 4)}
@@ -289,59 +389,57 @@ const Index = () => {
 
       {/* Contact Section */}
       <section className="py-20 bg-gradient-to-r from-green-600 to-green-800">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to <span className="text-green-200">Get Started?</span>
-          </h2>
-          <p className="text-xl text-green-100 mb-8 leading-relaxed">
-            Don't miss this opportunity to own or lease premium agricultural land. Contact us today for viewing arrangements and detailed information.
-          </p>
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Contact <span className="text-green-200">Our Owners</span>
+            </h2>
+            <p className="text-xl text-green-100 mb-8 leading-relaxed">
+              Reach out to our property owners for detailed information, site visits, and pricing negotiations.
+            </p>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
-              <CardContent className="p-6 text-center">
-                <div className="flex justify-center gap-2 mb-4">
-                  <Badge className="bg-green-500 text-white">Sale</Badge>
-                  <Badge className="bg-blue-500 text-white">Lease</Badge>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Purchase Options</h3>
-                <p className="text-green-100 mb-4">Full ownership or flexible lease terms available</p>
-                <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-2 rounded-full">
-                  Get Pricing Info
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
-              <CardContent className="p-6 text-center">
-                <Phone className="h-10 w-10 mx-auto mb-4 text-green-200" />
-                <h3 className="text-xl font-bold mb-2">Direct Contact</h3>
-                <p className="text-green-100 mb-4">Speak with the property owner</p>
-                <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-2 rounded-full">
-                  +1 (555) 123-4567
-                </Button>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {owners.filter(owner => owner.name || owner.phone).map((owner, index) => (
+              <Card key={index} className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Phone className="h-8 w-8 text-white" />
+                  </div>
+                  {owner.name && <h3 className="text-xl font-bold mb-2">{owner.name}</h3>}
+                  <div className="space-y-2">
+                    <Button 
+                      variant="outline" 
+                      className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold"
+                    >
+                      <Phone className="mr-2 h-4 w-4" />
+                      {owner.phone}
+                    </Button>
+                    {owner.email && (
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold text-sm"
+                      >
+                        <Mail className="mr-2 h-4 w-4" />
+                        {owner.email}
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
-              <CardContent className="p-6 text-center">
-                <Mail className="h-10 w-10 mx-auto mb-4 text-green-200" />
-                <h3 className="text-xl font-bold mb-2">Email Inquiry</h3>
-                <p className="text-green-100 mb-4">Get detailed information via email</p>
+          <div className="text-center">
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300 max-w-2xl mx-auto">
+              <CardContent className="p-8 text-center">
+                <MapPin className="h-12 w-12 mx-auto mb-4 text-green-200" />
+                <h3 className="text-2xl font-bold mb-4">Property Location</h3>
+                <p className="text-green-100 mb-2 text-lg">MUGTIHALLY & KAIDALA Villages</p>
+                <p className="text-green-100 mb-4">Nonavinakere, Tiptur Taluk, Tumkur District</p>
+                <p className="text-green-100 mb-6">Karnataka 572212</p>
                 <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-2 rounded-full">
-                  land@example.com
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
-              <CardContent className="p-6 text-center">
-                <MapPin className="h-10 w-10 mx-auto mb-4 text-green-200" />
-                <h3 className="text-xl font-bold mb-2">Property Location</h3>
-                <p className="text-green-100 mb-4">Rural Agricultural District</p>
-                <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-2 rounded-full">
+                  <MapPin className="mr-2 h-4 w-4" />
                   View on Map
                 </Button>
               </CardContent>
@@ -355,7 +453,8 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="mb-8">
             <h3 className="text-3xl font-bold mb-4">Premium Agricultural Land</h3>
-            <p className="text-gray-400 text-lg">19 Acres • Available for Sale & Lease</p>
+            <p className="text-gray-400 text-lg">19 Acres • Available for Sale, Lease & Rent</p>
+            <p className="text-gray-400">Karnataka • Tumkur District • Tiptur Taluk</p>
           </div>
           <div className="border-t border-gray-800 pt-8">
             <p className="text-gray-500">© 2024 Agricultural Land Sales. All rights reserved.</p>
