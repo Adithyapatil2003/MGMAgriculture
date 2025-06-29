@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Car } from "lucide-react";
+import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Car, Palmtree } from "lucide-react";
 import { useState } from "react";
 
 const Index = () => {
@@ -14,36 +14,46 @@ const Index = () => {
     "https://images.unsplash.com/photo-1465379944081-7f47de8d74ac?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
   ];
 
+  const plotDetails = [
+    { plot: "Plot 1", area: "6 acres 12 Gunthas", type: "Coconut Farm", description: "Large coconut plantation with mature trees" },
+    { plot: "Plot 2", area: "1 acre 26 Gunthas", type: "Paddy Field", description: "Fertile paddy cultivation area" },
+    { plot: "Plot 3", area: "1 acre 3 Gunthas", type: "Coconut Farm", description: "Compact coconut grove" },
+    { plot: "Plot 4", area: "4 acres", type: "Coconut Farm", description: "Extensive coconut plantation" },
+    { plot: "Plot 5", area: "2 acres 10 Gunthas", type: "Coconut Farm", description: "Medium-sized coconut farm" },
+    { plot: "Plot 6", area: "2 acres 2.5 Gunthas", type: "Teak Plantation", description: "Premium teak tree plantation" },
+    { plot: "Plot 7", area: "2 acres", type: "Coconut Farm", description: "Well-maintained coconut grove" }
+  ];
+
   const features = [
+    {
+      icon: <Palmtree className="h-6 w-6 text-green-600" />,
+      title: "Premium Coconuts",
+      description: "Tall, oil-rich coconut trees producing nutrient-rich tender coconuts"
+    },
+    {
+      icon: <TreePine className="h-6 w-6 text-amber-600" />,
+      title: "Teak Plantation",
+      description: "Valuable teak trees for premium timber production"
+    },
+    {
+      icon: <Wheat className="h-6 w-6 text-green-700" />,
+      title: "Paddy Fields",
+      description: "Fertile paddy cultivation area for rice production"
+    },
     {
       icon: <Droplets className="h-6 w-6 text-blue-600" />,
       title: "Water Access",
       description: "Natural water source with irrigation capabilities"
-    },
-    {
-      icon: <TreePine className="h-6 w-6 text-green-600" />,
-      title: "Rich Soil",
-      description: "Fertile agricultural soil perfect for various crops"
-    },
-    {
-      icon: <Wheat className="h-6 w-6 text-amber-600" />,
-      title: "Crop Ready",
-      description: "Cleared and prepared for immediate cultivation"
-    },
-    {
-      icon: <Car className="h-6 w-6 text-gray-600" />,
-      title: "Road Access",
-      description: "Easy access via paved roads for transportation"
     }
   ];
 
   const specifications = [
-    { label: "Total Area", value: "19 Acres" },
-    { label: "Land Type", value: "Agricultural" },
-    { label: "Soil Quality", value: "Grade A Fertile" },
-    { label: "Water Source", value: "Available" },
-    { label: "Road Access", value: "Paved Road" },
-    { label: "Zoning", value: "Agricultural Use" }
+    { label: "Total Area", value: "19 Acres (7 Plots)" },
+    { label: "Coconut Farms", value: "5 Plots (15+ Acres)" },
+    { label: "Paddy Field", value: "1 Plot (1.65 Acres)" },
+    { label: "Teak Plantation", value: "1 Plot (2+ Acres)" },
+    { label: "Coconut Quality", value: "Oil-rich, Tender" },
+    { label: "Tree Height", value: "Tall, Mature Trees" }
   ];
 
   return (
@@ -73,7 +83,7 @@ const Index = () => {
             <span className="block text-green-400">Agricultural Land</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed">
-            19 acres of pristine farmland with rich soil, water access, and endless possibilities
+            19 acres across 7 plots featuring coconut farms, paddy fields, and teak plantation
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
@@ -107,6 +117,45 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Plot Details Section */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+              Land <span className="text-green-600">Distribution</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Our 19-acre property is strategically divided into 7 distinct plots, each optimized for different agricultural purposes.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {plotDetails.map((plot, index) => (
+              <Card key={index} className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg">
+                <CardHeader className="pb-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <CardTitle className="text-lg font-bold text-gray-800">{plot.plot}</CardTitle>
+                    <Badge className={`${
+                      plot.type === 'Coconut Farm' ? 'bg-green-100 text-green-800' :
+                      plot.type === 'Paddy Field' ? 'bg-blue-100 text-blue-800' :
+                      'bg-amber-100 text-amber-800'
+                    }`}>
+                      {plot.type}
+                    </Badge>
+                  </div>
+                  <div className="text-2xl font-bold text-green-600 mb-2">{plot.area}</div>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-gray-600 text-base">
+                    {plot.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Property Details Section */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
@@ -115,7 +164,7 @@ const Index = () => {
               Property <span className="text-green-600">Overview</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Discover the potential of this exceptional agricultural property, available for both purchase and lease arrangements to suit your farming or investment needs.
+              Discover the potential of this exceptional multi-plot agricultural property, available for both purchase and lease arrangements.
             </p>
           </div>
 
@@ -163,19 +212,19 @@ const Index = () => {
               </div>
 
               <div className="bg-gradient-to-r from-green-600 to-green-700 p-8 rounded-2xl text-white shadow-xl">
-                <h4 className="text-2xl font-bold mb-4">Prime Location Benefits</h4>
+                <h4 className="text-2xl font-bold mb-4">Coconut Farm Highlights</h4>
                 <ul className="space-y-3">
                   <li className="flex items-center">
-                    <MapPin className="h-5 w-5 mr-3 text-green-200" />
-                    Strategic location with excellent connectivity
+                    <Palmtree className="h-5 w-5 mr-3 text-green-200" />
+                    Tall, mature coconut trees with high yield
                   </li>
                   <li className="flex items-center">
                     <Droplets className="h-5 w-5 mr-3 text-blue-200" />
-                    Reliable water supply for year-round cultivation
+                    Oil-rich coconuts with nutrient-rich tender water
                   </li>
                   <li className="flex items-center">
                     <TreePine className="h-5 w-5 mr-3 text-green-200" />
-                    Established infrastructure for immediate use
+                    Premium teak plantation for timber value
                   </li>
                 </ul>
               </div>
@@ -192,7 +241,7 @@ const Index = () => {
               Key <span className="text-green-600">Features</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Everything you need for successful agricultural operations
+              Diverse agricultural opportunities across multiple crop types
             </p>
           </div>
 
