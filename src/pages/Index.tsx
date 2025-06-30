@@ -463,7 +463,7 @@ const Index = () => {
                 <p className="text-green-100 mb-4">Nonavinakere, Tiptur Taluk, Tumkur District</p>
                 <p className="text-green-100 mb-6">Karnataka 572212</p>
                 <a
-                  href="https://g.co/kgs/K6Ch2d8"
+                  href="https://maps.app.goo.gl/NvcvAGALGAFHiYgA7"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
