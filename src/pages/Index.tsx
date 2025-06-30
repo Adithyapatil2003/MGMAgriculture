@@ -104,10 +104,21 @@ const Index = () => {
   ];
 
   const owners = [
-    { name: "Mohan M G", phone: "9448018544", email: "mg_mohan2003@yahoo.co.in" },
-    { name: "Nandini H J", phone: "8073984709", email: "" },
-    { name: "M Deepak", phone: "9480708440", email: "mm.deepak2003@gmail.com" },
-    { name: "", phone: "9845326568", email: "" }
+    { 
+      name: "Mohan M G", 
+      phones: ["9448018544", "8073984709"], 
+      email: "mg_mohan2003@yahoo.co.in" 
+    },
+    { 
+      name: "Nandini H J", 
+      phones: ["9480708440"], 
+      email: "" 
+    },
+    { 
+      name: "M Deepak", 
+      phones: ["9845326568"], 
+      email: "mm.deepak2003@gmail.com" 
+    }
   ];
 
   return (
@@ -400,29 +411,42 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {owners.filter(owner => owner.name || owner.phone).map((owner, index) => (
+            {owners.map((owner, index) => (
               <Card key={index} className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
                 <CardContent className="p-6 text-center">
                   <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Phone className="h-8 w-8 text-white" />
                   </div>
-                  {owner.name && <h3 className="text-xl font-bold mb-2">{owner.name}</h3>}
+                  <h3 className="text-xl font-bold mb-4">{owner.name}</h3>
                   <div className="space-y-2">
-                    <Button 
-                      variant="outline" 
-                      className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold"
-                    >
-                      <Phone className="mr-2 h-4 w-4" />
-                      {owner.phone}
-                    </Button>
-                    {owner.email && (
-                      <Button 
-                        variant="outline" 
-                        className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold text-sm"
+                    {owner.phones.map((phone, phoneIndex) => (
+                      <a
+                        key={phoneIndex}
+                        href={`tel:${phone}`}
+                        className="block"
                       >
-                        <Mail className="mr-2 h-4 w-4" />
-                        {owner.email}
-                      </Button>
+                        <Button 
+                          variant="outline" 
+                          className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold"
+                        >
+                          <Phone className="mr-2 h-4 w-4" />
+                          {phone}
+                        </Button>
+                      </a>
+                    ))}
+                    {owner.email && (
+                      <a
+                        href={`mailto:${owner.email}`}
+                        className="block"
+                      >
+                        <Button 
+                          variant="outline" 
+                          className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold text-sm"
+                        >
+                          <Mail className="mr-2 h-4 w-4" />
+                          {owner.email}
+                        </Button>
+                      </a>
                     )}
                   </div>
                 </CardContent>
@@ -438,10 +462,16 @@ const Index = () => {
                 <p className="text-green-100 mb-2 text-lg">MUGTIHALLY & KAIDALA Villages</p>
                 <p className="text-green-100 mb-4">Nonavinakere, Tiptur Taluk, Tumkur District</p>
                 <p className="text-green-100 mb-6">Karnataka 572212</p>
-                <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-2 rounded-full">
-                  <MapPin className="mr-2 h-4 w-4" />
-                  View on Map
-                </Button>
+                <a
+                  href="https://g.co/kgs/K6Ch2d8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button className="bg-white text-green-800 hover:bg-green-50 font-semibold px-6 py-2 rounded-full">
+                    <MapPin className="mr-2 h-4 w-4" />
+                    View on Map
+                  </Button>
+                </a>
               </CardContent>
             </Card>
           </div>
