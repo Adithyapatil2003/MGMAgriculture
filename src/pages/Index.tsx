@@ -2,11 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Car, Palmtree, IndianRupee, Download, Play } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState(0);
+  const pricingSectionRef = useRef<HTMLElement>(null);
 
   const propertyImages = [
     "/lovable-uploads/383bd408-e4a2-4387-84ad-2f48464d4a60.png",
@@ -160,6 +161,13 @@ const Index = () => {
     }
   };
 
+  const scrollToPricing = () => {
+    pricingSectionRef.current?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
+
   // Auto-change background images
   useEffect(() => {
     const interval = setInterval(() => {
@@ -184,15 +192,21 @@ const Index = () => {
         
         <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
           <div className="flex flex-wrap justify-center gap-3 mb-4">
-            <Badge className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm">
-              FOR SALE
-            </Badge>
-            <Badge className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm">
-              FOR LEASE
-            </Badge>
-            <Badge className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-sm">
-              FOR RENT
-            </Badge>
+            <button onClick={scrollToPricing}>
+              <Badge className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm cursor-pointer transition-all duration-300 hover:scale-105">
+                FOR SALE
+              </Badge>
+            </button>
+            <button onClick={scrollToPricing}>
+              <Badge className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm cursor-pointer transition-all duration-300 hover:scale-105">
+                FOR LEASE
+              </Badge>
+            </button>
+            <button onClick={scrollToPricing}>
+              <Badge className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-sm cursor-pointer transition-all duration-300 hover:scale-105">
+                FOR RENT
+              </Badge>
+            </button>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             Premium
@@ -302,7 +316,7 @@ const Index = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 px-4 bg-white">
+      <section ref={pricingSectionRef} className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
