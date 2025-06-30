@@ -234,6 +234,21 @@ Thank you.
     return () => clearInterval(interval);
   }, [propertyImages.length]);
 
+  useEffect(() => {
+    const disableCopy = (e: ClipboardEvent) => {
+      e.preventDefault();
+    };
+    const disableRightClick = (e: MouseEvent) => e.preventDefault();
+
+    document.addEventListener("copy", disableCopy);
+    document.addEventListener("contextmenu", disableRightClick);
+
+    return () => {
+      document.removeEventListener("copy", disableCopy);
+      document.removeEventListener("contextmenu", disableRightClick);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50">
       {/* Hero Section */}
