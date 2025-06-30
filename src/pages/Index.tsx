@@ -711,7 +711,7 @@ Thank you.
             <p className="text-gray-400">Karnataka • Tumkur District • Tiptur Taluk</p>
           </div>
           <div className="border-t border-gray-800 pt-8">
-            <p className="text-gray-500">© {new Date().getFullYear()} Agricultural Land Sales. All rights reserved.</p>
+            <p className="text-gray-500">© {new Date().getFullYear()} Agricultural Lands Sales. All rights reserved.</p>
           </div>
         </div>
       </footer>
