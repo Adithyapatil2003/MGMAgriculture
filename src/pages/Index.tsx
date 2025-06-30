@@ -282,7 +282,7 @@ Thank you.
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             MGM Premium
-            <span className="block text-green-400">Agricultural Land</span>
+            <span className="block text-green-400">Agricultural Lands</span>
           </h1>
           <p className="text-xl md:text-2xl mb-4 text-gray-200 leading-relaxed">
             19 acres across 7 plots featuring coconut farms, paddy fields, and teak plantation
@@ -706,12 +706,12 @@ Thank you.
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="mb-8">
-            <h3 className="text-3xl font-bold mb-4">MGM Premium Agricultural Land</h3>
+            <h3 className="text-3xl font-bold mb-4">MGM Premium Agricultural Lands</h3>
             <p className="text-gray-400 text-lg">19 Acres • Available for Sale, Lease & Rent</p>
             <p className="text-gray-400">Karnataka • Tumkur District • Tiptur Taluk</p>
           </div>
           <div className="border-t border-gray-800 pt-8">
-            <p className="text-gray-500">© 2024 Agricultural Land Sales. All rights reserved.</p>
+            <p className="text-gray-500">© {new Date().getFullYear()} Agricultural Land Sales. All rights reserved.</p>
           </div>
         </div>
       </footer>
