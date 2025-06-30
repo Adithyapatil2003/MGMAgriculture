@@ -1,12 +1,12 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Car, Palmtree, IndianRupee } from "lucide-react";
+import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Car, Palmtree, IndianRupee, Download, Play } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedVideo, setSelectedVideo] = useState(0);
 
   const propertyImages = [
     "/lovable-uploads/383bd408-e4a2-4387-84ad-2f48464d4a60.png",
@@ -28,14 +28,28 @@ const Index = () => {
     "/lovable-uploads/ec258172-1a94-4364-b12b-96c84dd82762.png"
   ];
 
-  // Auto-change background images
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSelectedImage((prev) => (prev + 1) % propertyImages.length);
-    }, 4000); // Change every 4 seconds
-
-    return () => clearInterval(interval);
-  }, [propertyImages.length]);
+  const propertyVideos = [
+    {
+      title: "Coconut Farm Overview",
+      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      description: "Aerial view of the coconut plantation showing mature trees and layout"
+    },
+    {
+      title: "Paddy Field Tour",
+      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      description: "Walkthrough of the fertile paddy cultivation area"
+    },
+    {
+      title: "Teak Plantation",
+      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      description: "Premium teak trees and their growth progress"
+    },
+    {
+      title: "Property Access & Location",
+      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      description: "Road access and surrounding area overview"
+    }
+  ];
 
   const plotDetails = [
     { plot: "Plot 1", area: "6 acres 12 Gunthas", type: "Coconut Farm", description: "Large coconut plantation with mature trees" },
@@ -121,6 +135,40 @@ const Index = () => {
     }
   ];
 
+  const downloadImage = async (imageUrl: string, filename: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading image:', error);
+    }
+  };
+
+  const downloadAllImages = async () => {
+    for (let i = 0; i < propertyImages.length; i++) {
+      await downloadImage(propertyImages[i], `property-image-${i + 1}.png`);
+      // Add a small delay between downloads
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+  };
+
+  // Auto-change background images
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSelectedImage((prev) => (prev + 1) % propertyImages.length);
+    }, 4000); // Change every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [propertyImages.length]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50">
       {/* Hero Section */}
@@ -185,6 +233,71 @@ const Index = () => {
               }`}
             />
           ))}
+        </div>
+      </section>
+
+      {/* Video Gallery Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-gray-900 to-gray-800">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Property <span className="text-green-400">Videos</span>
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              Take a virtual tour of our agricultural property through these detailed video presentations.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {/* Main Video Player */}
+            <div className="space-y-6">
+              <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl">
+                <iframe
+                  src={propertyVideos[selectedVideo].url}
+                  title={propertyVideos[selectedVideo].title}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-white">
+                <h3 className="text-2xl font-bold mb-3">{propertyVideos[selectedVideo].title}</h3>
+                <p className="text-gray-300 text-lg leading-relaxed">
+                  {propertyVideos[selectedVideo].description}
+                </p>
+              </div>
+            </div>
+
+            {/* Video Thumbnails */}
+            <div className="space-y-4">
+              <h3 className="text-2xl font-bold text-white mb-6">All Videos</h3>
+              <div className="grid grid-cols-1 gap-4">
+                {propertyVideos.map((video, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedVideo(index)}
+                    className={`group relative bg-white/10 backdrop-blur-md rounded-xl p-4 text-left transition-all duration-300 hover:bg-white/20 ${
+                      selectedVideo === index ? 'bg-white/20 ring-2 ring-green-400' : ''
+                    }`}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0 w-16 h-16 bg-green-600 rounded-lg flex items-center justify-center group-hover:bg-green-500 transition-colors">
+                        <Play className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-lg font-semibold text-white mb-1 truncate">
+                          {video.title}
+                        </h4>
+                        <p className="text-gray-300 text-sm line-clamp-2">
+                          {video.description}
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -275,22 +388,37 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-              Property <span className="text-green-600">Overview</span>
+              Property <span className="text-green-600">Gallery</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Discover the potential of this exceptional multi-plot agricultural property, available for both purchase and lease arrangements.
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
+              Explore detailed images of this exceptional multi-plot agricultural property.
             </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button 
+                onClick={downloadAllImages}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Download className="mr-2 h-5 w-5" />
+                Download All Images
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Property Images Gallery */}
             <div className="space-y-4">
-              <div className="relative h-80 rounded-2xl overflow-hidden shadow-xl">
+              <div className="relative h-80 rounded-2xl overflow-hidden shadow-xl group">
                 <img 
                   src={propertyImages[selectedImage]} 
                   alt="Property view"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                 />
+                <button
+                  onClick={() => downloadImage(propertyImages[selectedImage], `property-image-${selectedImage + 1}.png`)}
+                  className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"
+                >
+                  <Download className="h-4 w-4" />
+                </button>
               </div>
               <div className="grid grid-cols-4 gap-3">
                 {propertyImages.slice(0, 4).map((image, index) => (
