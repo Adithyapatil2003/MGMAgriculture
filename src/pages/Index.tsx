@@ -124,7 +124,7 @@ const Index = () => {
     { 
       name: "Nandini H J", 
       phones: ["9480708440"], 
-      email: "" 
+      email: "nandinimhj@gmail.com" 
     },
     { 
       name: "M Deepak", 
@@ -266,7 +266,7 @@ Thank you.
             </button>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Premium
+            MGM Premium
             <span className="block text-green-400">Agricultural Land</span>
           </h1>
           <p className="text-xl md:text-2xl mb-4 text-gray-200 leading-relaxed">
@@ -288,7 +288,7 @@ Thank you.
               onClick={scrollToPricing}
               variant="outline" 
               size="lg"
-              className="border-white text-white hover:bg-white hover:text-green-800 px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="border-white text-white bg-white/20 px-8 py-4 text-lg font-semibold rounded-full shadow-lg"
             >
               View Pricing
             </Button>
@@ -691,7 +691,7 @@ Thank you.
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="mb-8">
-            <h3 className="text-3xl font-bold mb-4">Premium Agricultural Land</h3>
+            <h3 className="text-3xl font-bold mb-4">MGM Premium Agricultural Land</h3>
             <p className="text-gray-400 text-lg">19 Acres • Available for Sale, Lease & Rent</p>
             <p className="text-gray-400">Karnataka • Tumkur District • Tiptur Taluk</p>
           </div>
