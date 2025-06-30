@@ -1,15 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Car, Palmtree, IndianRupee, Download, Play } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Palmtree, IndianRupee, Download, Send } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedVideo, setSelectedVideo] = useState(0);
+  const [customerName, setCustomerName] = useState("");
+  const [customerContact, setCustomerContact] = useState("");
+  const [customerMessage, setCustomerMessage] = useState("");
   const pricingSectionRef = useRef<HTMLElement>(null);
+  const contactSectionRef = useRef<HTMLElement>(null);
+  const { toast } = useToast();
 
+  // New images with priority order
   const propertyImages = [
+    "/lovable-uploads/ece37575-ccee-478c-8cba-8db9e133eda4.png",
+    "/lovable-uploads/bf1f0143-e143-40d0-a44e-a4a62c2dd600.png",
+    "/lovable-uploads/0b09419d-486e-498b-8051-e600b4a1f8db.png",
+    "/lovable-uploads/bf6693e2-e238-4fae-886b-74a3e6125ecd.png",
+    "/lovable-uploads/5c598329-e359-4cec-a690-5aca03c3d116.png",
+    "/lovable-uploads/1561e55f-e833-40cd-8e50-22bd67ddac90.png",
+    "/lovable-uploads/ea0be2bd-f74d-4e29-820a-9d7ba784c03a.png",
+    "/lovable-uploads/6df4ace9-c7b4-479a-ae0a-3163caa589b0.png",
+    "/lovable-uploads/263818a0-abf1-4142-9702-bd6283783b37.png",
+    "/lovable-uploads/3231cf4b-e544-4c17-a7c0-c7fe0d9975ae.png",
+    // Existing images after new ones
     "/lovable-uploads/383bd408-e4a2-4387-84ad-2f48464d4a60.png",
     "/lovable-uploads/7cc8736c-7a77-4093-8aeb-18b5536cb9e5.png",
     "/lovable-uploads/7af551e0-637a-41cb-a322-992c62c0c03d.png",
@@ -27,29 +47,6 @@ const Index = () => {
     "/lovable-uploads/76cc52fd-448a-406a-9baa-978084443292.png",
     "/lovable-uploads/d4074998-23e4-43a0-bf9b-6092cfe2ab93.png",
     "/lovable-uploads/ec258172-1a94-4364-b12b-96c84dd82762.png"
-  ];
-
-  const propertyVideos = [
-    {
-      title: "Coconut Farm Overview",
-      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      description: "Aerial view of the coconut plantation showing mature trees and layout"
-    },
-    {
-      title: "Paddy Field Tour",
-      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      description: "Walkthrough of the fertile paddy cultivation area"
-    },
-    {
-      title: "Teak Plantation",
-      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      description: "Premium teak trees and their growth progress"
-    },
-    {
-      title: "Property Access & Location",
-      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      description: "Road access and surrounding area overview"
-    }
   ];
 
   const plotDetails = [
@@ -156,7 +153,6 @@ const Index = () => {
   const downloadAllImages = async () => {
     for (let i = 0; i < propertyImages.length; i++) {
       await downloadImage(propertyImages[i], `property-image-${i + 1}.png`);
-      // Add a small delay between downloads
       await new Promise(resolve => setTimeout(resolve, 500));
     }
   };
@@ -168,11 +164,72 @@ const Index = () => {
     });
   };
 
+  const scrollToContact = () => {
+    contactSectionRef.current?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
+
+  const handleInquirySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!customerName || !customerContact) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create mailto links for each owner with email
+    const emailSubject = encodeURIComponent("Property Inquiry - Agricultural Land");
+    const emailBody = encodeURIComponent(`
+Dear Sir/Madam,
+
+I am interested in your agricultural property listing and would like to get more information.
+
+Customer Details:
+Name: ${customerName}
+Contact Number: ${customerContact}
+Message: ${customerMessage || 'No additional message'}
+
+Please contact me at your earliest convenience.
+
+Thank you.
+    `);
+
+    const ownersWithEmail = owners.filter(owner => owner.email);
+    
+    if (ownersWithEmail.length > 0) {
+      // Open mailto for the first owner with email
+      const mailtoLink = `mailto:${ownersWithEmail[0].email}?subject=${emailSubject}&body=${emailBody}`;
+      window.open(mailtoLink);
+      
+      toast({
+        title: "Inquiry Sent",
+        description: "Your inquiry has been prepared and sent to the property owners.",
+      });
+      
+      // Reset form
+      setCustomerName("");
+      setCustomerContact("");
+      setCustomerMessage("");
+    } else {
+      toast({
+        title: "Error",
+        description: "No owner email addresses available. Please contact them directly via phone.",
+        variant: "destructive",
+      });
+    }
+  };
+
   // Auto-change background images
   useEffect(() => {
     const interval = setInterval(() => {
       setSelectedImage((prev) => (prev + 1) % propertyImages.length);
-    }, 4000); // Change every 4 seconds
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [propertyImages.length]);
@@ -220,6 +277,7 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
+              onClick={scrollToContact}
               size="lg" 
               className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
@@ -227,6 +285,7 @@ const Index = () => {
               Contact Owners
             </Button>
             <Button 
+              onClick={scrollToPricing}
               variant="outline" 
               size="lg"
               className="border-white text-white hover:bg-white hover:text-green-800 px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
@@ -250,68 +309,76 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Video Gallery Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-gray-900 to-gray-800">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+      {/* Inquiry Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-blue-800">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Property <span className="text-green-400">Videos</span>
+              Property <span className="text-blue-200">Inquiry</span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Take a virtual tour of our agricultural property through these detailed video presentations.
+            <p className="text-xl text-blue-100 leading-relaxed">
+              Interested in this property? Send us your details and we'll get back to you.
             </p>
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            {/* Main Video Player */}
-            <div className="space-y-6">
-              <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl">
-                <iframe
-                  src={propertyVideos[selectedVideo].url}
-                  title={propertyVideos[selectedVideo].title}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-              <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-white">
-                <h3 className="text-2xl font-bold mb-3">{propertyVideos[selectedVideo].title}</h3>
-                <p className="text-gray-300 text-lg leading-relaxed">
-                  {propertyVideos[selectedVideo].description}
-                </p>
-              </div>
-            </div>
-
-            {/* Video Thumbnails */}
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold text-white mb-6">All Videos</h3>
-              <div className="grid grid-cols-1 gap-4">
-                {propertyVideos.map((video, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedVideo(index)}
-                    className={`group relative bg-white/10 backdrop-blur-md rounded-xl p-4 text-left transition-all duration-300 hover:bg-white/20 ${
-                      selectedVideo === index ? 'bg-white/20 ring-2 ring-green-400' : ''
-                    }`}
+          
+          <Card className="bg-white/10 backdrop-blur-md border-white/20">
+            <CardContent className="p-8">
+              <form onSubmit={handleInquirySubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label htmlFor="customerName" className="text-white text-base font-semibold mb-2 block">
+                      Customer Name *
+                    </Label>
+                    <Input
+                      id="customerName"
+                      type="text"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      className="bg-white/20 border-white/40 text-white placeholder:text-white/70"
+                      placeholder="Enter your full name"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="customerContact" className="text-white text-base font-semibold mb-2 block">
+                      Contact Number *
+                    </Label>
+                    <Input
+                      id="customerContact"
+                      type="tel"
+                      value={customerContact}
+                      onChange={(e) => setCustomerContact(e.target.value)}
+                      className="bg-white/20 border-white/40 text-white placeholder:text-white/70"
+                      placeholder="Enter your phone number"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="customerMessage" className="text-white text-base font-semibold mb-2 block">
+                    Message (Optional)
+                  </Label>
+                  <Textarea
+                    id="customerMessage"
+                    value={customerMessage}
+                    onChange={(e) => setCustomerMessage(e.target.value)}
+                    className="bg-white/20 border-white/40 text-white placeholder:text-white/70 min-h-[100px]"
+                    placeholder="Any specific questions or requirements..."
+                  />
+                </div>
+                <div className="text-center">
+                  <Button 
+                    type="submit"
+                    size="lg"
+                    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                   >
-                    <div className="flex items-center space-x-4">
-                      <div className="flex-shrink-0 w-16 h-16 bg-green-600 rounded-lg flex items-center justify-center group-hover:bg-green-500 transition-colors">
-                        <Play className="h-6 w-6 text-white" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-lg font-semibold text-white mb-1 truncate">
-                          {video.title}
-                        </h4>
-                        <p className="text-gray-300 text-sm line-clamp-2">
-                          {video.description}
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+                    <Send className="mr-2 h-5 w-5" />
+                    Send Inquiry
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -541,7 +608,7 @@ const Index = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="py-20 bg-gradient-to-r from-green-600 to-green-800">
+      <section ref={contactSectionRef} className="py-20 bg-gradient-to-r from-green-600 to-green-800">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
