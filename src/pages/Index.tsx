@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -187,34 +186,6 @@ const Index = () => {
       return;
     }
 
-    // Create WhatsApp message
-    const whatsappMessage = encodeURIComponent(`
-Hello! I am interested in your MGM Premium Agricultural Lands property and would like to get more information.
-
-Customer Details:
-Name: ${customerName}
-Contact Number: ${customerContact}
-Message: ${customerMessage || 'No additional message'}
-
-Property: 19 acres across 7 plots featuring coconut farms, paddy fields, and teak plantation
-Location: MUGTIHALLY & KAIDALA Villages, Nonavinakere, Tiptur Taluk, Tumkur District, Karnataka
-
-Please contact me at your earliest convenience.
-
-Thank you.
-    `);
-
-    // WhatsApp numbers to send messages to
-    const whatsappNumbers = ["9448018544", "9845326568"];
-    
-    // Send to multiple WhatsApp numbers
-    whatsappNumbers.forEach((number, index) => {
-      setTimeout(() => {
-        const whatsappUrl = `https://wa.me/91${number}?text=${whatsappMessage}`;
-        window.open(whatsappUrl, '_blank');
-      }, index * 1000); // Delay each message by 1 second
-    });
-
     // Create email for owners with email addresses
     const emailSubject = encodeURIComponent("Property Inquiry - MGM Agricultural Land");
     const emailBody = encodeURIComponent(`
@@ -241,12 +212,18 @@ Thank you.
     if (ownersWithEmail.length > 0) {
       const mailtoLink = `mailto:${ownersWithEmail[0].email}?subject=${emailSubject}&body=${emailBody}`;
       window.open(mailtoLink, '_blank');
+      
+      toast({
+        title: "Inquiry Sent",
+        description: "Your inquiry has been sent via email to the property owners.",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "No owner email available. Please contact them directly via phone.",
+        variant: "destructive",
+      });
     }
-
-    toast({
-      title: "Inquiry Sent",
-      description: `Your inquiry has been sent via WhatsApp to ${whatsappNumbers.length} owners and email (if available).`,
-    });
     
     // Reset form
     setCustomerName("");
@@ -368,15 +345,11 @@ Thank you.
                 <Mail className="h-5 w-5" />
                 <span>Email</span>
               </div>
-              <div className="w-1 h-1 bg-blue-200 rounded-full"></div>
               <div className="flex items-center gap-2">
-                <MessageCircle className="h-5 w-5" />
-                <span>WhatsApp</span>
+                <Phone className="h-5 w-5" />
+                <span>Phone</span>
               </div>
             </div>
-            <p className="text-sm text-blue-200 mt-2">
-              Messages will be sent to: 9448018544, 9845326568
-            </p>
           </div>
           
           <Card className="bg-white/10 backdrop-blur-md border-white/20">
@@ -430,8 +403,8 @@ Thank you.
                     size="lg"
                     className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                   >
-                    <MessageCircle className="mr-2 h-5 w-5" />
-                    Send via WhatsApp & Email
+                    <Send className="mr-2 h-5 w-5" />
+                    Send Inquiry via Email
                   </Button>
                 </div>
               </form>
