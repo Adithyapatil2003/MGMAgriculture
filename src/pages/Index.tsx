@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Palmtree, IndianRupee, Download, Send } from "lucide-react";
+import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Palmtree, IndianRupee, Download, Send, MessageCircle } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -119,17 +119,20 @@ const Index = () => {
     { 
       name: "Mohan M G", 
       phones: ["9448018544", "8073984709"], 
-      email: "mg_mohan2003@yahoo.co.in" 
+      email: "mg_mohan2003@yahoo.co.in",
+      whatsapp: "9448018544"
     },
     { 
       name: "Nandini H J", 
       phones: ["9480708440"], 
-      email: "nandinimhj@gmail.com" 
+      email: "nandinimhj@gmail.com",
+      whatsapp: "9480708440"
     },
     { 
       name: "M Deepak", 
       phones: ["9845326568"], 
-      email: "mm.deepak2003@gmail.com" 
+      email: "mm.deepak2003@gmail.com",
+      whatsapp: "9845326568"
     }
   ];
 
@@ -183,6 +186,20 @@ const Index = () => {
       return;
     }
 
+    // Create WhatsApp message
+    const whatsappMessage = encodeURIComponent(`
+Hello! I am interested in your agricultural property listing and would like to get more information.
+
+Customer Details:
+Name: ${customerName}
+Contact Number: ${customerContact}
+Message: ${customerMessage || 'No additional message'}
+
+Please contact me at your earliest convenience.
+
+Thank you.
+    `);
+
     // Create mailto links for each owner with email
     const emailSubject = encodeURIComponent("Property Inquiry - Agricultural Land");
     const emailBody = encodeURIComponent(`
@@ -201,28 +218,40 @@ Thank you.
     `);
 
     const ownersWithEmail = owners.filter(owner => owner.email);
+    const ownersWithWhatsApp = owners.filter(owner => owner.whatsapp);
     
+    // Send to WhatsApp first
+    if (ownersWithWhatsApp.length > 0) {
+      const whatsappUrl = `https://wa.me/91${ownersWithWhatsApp[0].whatsapp}?text=${whatsappMessage}`;
+      window.open(whatsappUrl, '_blank');
+    }
+    
+    // Then send to email
     if (ownersWithEmail.length > 0) {
-      // Open mailto for the first owner with email
       const mailtoLink = `mailto:${ownersWithEmail[0].email}?subject=${emailSubject}&body=${emailBody}`;
-      window.open(mailtoLink);
+      window.open(mailtoLink, '_blank');
       
       toast({
         title: "Inquiry Sent",
-        description: "Your inquiry has been prepared and sent to the property owners.",
+        description: "Your inquiry has been sent via WhatsApp and email to the property owners.",
       });
-      
-      // Reset form
-      setCustomerName("");
-      setCustomerContact("");
-      setCustomerMessage("");
+    } else if (ownersWithWhatsApp.length > 0) {
+      toast({
+        title: "Inquiry Sent",
+        description: "Your inquiry has been sent via WhatsApp to the property owners.",
+      });
     } else {
       toast({
         title: "Error",
-        description: "No owner email addresses available. Please contact them directly via phone.",
+        description: "No owner contact information available. Please contact them directly via phone.",
         variant: "destructive",
       });
     }
+    
+    // Reset form
+    setCustomerName("");
+    setCustomerContact("");
+    setCustomerMessage("");
   };
 
   // Auto-change background images
@@ -331,9 +360,20 @@ Thank you.
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Property <span className="text-blue-200">Inquiry</span>
             </h2>
-            <p className="text-xl text-blue-100 leading-relaxed">
+            <p className="text-xl text-blue-100 leading-relaxed mb-4">
               Interested in this property? Send us your details and we'll get back to you.
             </p>
+            <div className="flex items-center justify-center gap-4 text-blue-100">
+              <div className="flex items-center gap-2">
+                <Mail className="h-5 w-5" />
+                <span>Email</span>
+              </div>
+              <div className="w-1 h-1 bg-blue-200 rounded-full"></div>
+              <div className="flex items-center gap-2">
+                <MessageCircle className="h-5 w-5" />
+                <span>WhatsApp</span>
+              </div>
+            </div>
           </div>
           
           <Card className="bg-white/10 backdrop-blur-md border-white/20">
@@ -387,8 +427,8 @@ Thank you.
                     size="lg"
                     className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                   >
-                    <Send className="mr-2 h-5 w-5" />
-                    Send Inquiry
+                    <MessageCircle className="mr-2 h-5 w-5" />
+                    Send via WhatsApp & Email
                   </Button>
                 </div>
               </form>
@@ -658,6 +698,22 @@ Thank you.
                         </Button>
                       </a>
                     ))}
+                    {owner.whatsapp && (
+                      <a
+                        href={`https://wa.me/91${owner.whatsapp}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block"
+                      >
+                        <Button 
+                          variant="outline" 
+                          className="w-full bg-green-500/20 border-green-400/40 text-white hover:bg-green-400 hover:text-green-900 font-semibold"
+                        >
+                          <MessageCircle className="mr-2 h-4 w-4" />
+                          WhatsApp
+                        </Button>
+                      </a>
+                    )}
                     {owner.email && (
                       <a
                         href={`mailto:${owner.email}`}
