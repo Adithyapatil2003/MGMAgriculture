@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -188,29 +189,46 @@ const Index = () => {
 
     // Create WhatsApp message
     const whatsappMessage = encodeURIComponent(`
-Hello! I am interested in your agricultural property listing and would like to get more information.
+Hello! I am interested in your MGM Premium Agricultural Lands property and would like to get more information.
 
 Customer Details:
 Name: ${customerName}
 Contact Number: ${customerContact}
 Message: ${customerMessage || 'No additional message'}
+
+Property: 19 acres across 7 plots featuring coconut farms, paddy fields, and teak plantation
+Location: MUGTIHALLY & KAIDALA Villages, Nonavinakere, Tiptur Taluk, Tumkur District, Karnataka
 
 Please contact me at your earliest convenience.
 
 Thank you.
     `);
 
-    // Create mailto links for each owner with email
-    const emailSubject = encodeURIComponent("Property Inquiry - Agricultural Land");
+    // WhatsApp numbers to send messages to
+    const whatsappNumbers = ["9448018544", "9845326568"];
+    
+    // Send to multiple WhatsApp numbers
+    whatsappNumbers.forEach((number, index) => {
+      setTimeout(() => {
+        const whatsappUrl = `https://wa.me/91${number}?text=${whatsappMessage}`;
+        window.open(whatsappUrl, '_blank');
+      }, index * 1000); // Delay each message by 1 second
+    });
+
+    // Create email for owners with email addresses
+    const emailSubject = encodeURIComponent("Property Inquiry - MGM Agricultural Land");
     const emailBody = encodeURIComponent(`
 Dear Sir/Madam,
 
-I am interested in your agricultural property listing and would like to get more information.
+I am interested in your MGM Premium Agricultural Lands property and would like to get more information.
 
 Customer Details:
 Name: ${customerName}
 Contact Number: ${customerContact}
 Message: ${customerMessage || 'No additional message'}
+
+Property: 19 acres across 7 plots featuring coconut farms, paddy fields, and teak plantation
+Location: MUGTIHALLY & KAIDALA Villages, Nonavinakere, Tiptur Taluk, Tumkur District, Karnataka
 
 Please contact me at your earliest convenience.
 
@@ -218,35 +236,17 @@ Thank you.
     `);
 
     const ownersWithEmail = owners.filter(owner => owner.email);
-    const ownersWithWhatsApp = owners.filter(owner => owner.whatsapp);
     
-    // Send to WhatsApp first
-    if (ownersWithWhatsApp.length > 0) {
-      const whatsappUrl = `https://wa.me/91${ownersWithWhatsApp[0].whatsapp}?text=${whatsappMessage}`;
-      window.open(whatsappUrl, '_blank');
-    }
-    
-    // Then send to email
+    // Send to email if available
     if (ownersWithEmail.length > 0) {
       const mailtoLink = `mailto:${ownersWithEmail[0].email}?subject=${emailSubject}&body=${emailBody}`;
       window.open(mailtoLink, '_blank');
-      
-      toast({
-        title: "Inquiry Sent",
-        description: "Your inquiry has been sent via WhatsApp and email to the property owners.",
-      });
-    } else if (ownersWithWhatsApp.length > 0) {
-      toast({
-        title: "Inquiry Sent",
-        description: "Your inquiry has been sent via WhatsApp to the property owners.",
-      });
-    } else {
-      toast({
-        title: "Error",
-        description: "No owner contact information available. Please contact them directly via phone.",
-        variant: "destructive",
-      });
     }
+
+    toast({
+      title: "Inquiry Sent",
+      description: `Your inquiry has been sent via WhatsApp to ${whatsappNumbers.length} owners and email (if available).`,
+    });
     
     // Reset form
     setCustomerName("");
@@ -374,6 +374,9 @@ Thank you.
                 <span>WhatsApp</span>
               </div>
             </div>
+            <p className="text-sm text-blue-200 mt-2">
+              Messages will be sent to: 9448018544, 9845326568
+            </p>
           </div>
           
           <Card className="bg-white/10 backdrop-blur-md border-white/20">
