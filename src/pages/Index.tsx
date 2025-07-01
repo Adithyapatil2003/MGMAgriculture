@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [customerContact, setCustomerContact] = useState("");
   const [customerMessage, setCustomerMessage] = useState("");
   const pricingSectionRef = useRef<HTMLElement>(null);
@@ -195,6 +197,7 @@ I am interested in your MGM Premium Agricultural Lands property and would like t
 
 Customer Details:
 Name: ${customerName}
+Email: ${customerEmail || 'Not provided'}
 Contact Number: ${customerContact}
 Message: ${customerMessage || 'No additional message'}
 
@@ -227,6 +230,7 @@ Thank you.
     
     // Reset form
     setCustomerName("");
+    setCustomerEmail("");
     setCustomerContact("");
     setCustomerMessage("");
   };
@@ -384,6 +388,19 @@ Thank you.
                       required
                     />
                   </div>
+                </div>
+                <div>
+                  <Label htmlFor="customerEmail" className="text-white text-base font-semibold mb-2 block">
+                    Email Address (Optional)
+                  </Label>
+                  <Input
+                    id="customerEmail"
+                    type="email"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    className="bg-white/20 border-white/40 text-white placeholder:text-white/70"
+                    placeholder="Enter your email address"
+                  />
                 </div>
                 <div>
                   <Label htmlFor="customerMessage" className="text-white text-base font-semibold mb-2 block">
