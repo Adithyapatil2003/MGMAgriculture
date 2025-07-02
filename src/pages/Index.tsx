@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Palmtree, IndianRupee, Download, Send, MessageCircle } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
+import PricingCalculator from "@/components/PricingCalculator";
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -438,6 +439,22 @@ Thank you.
               </form>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      {/* Pricing Calculator Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-50 to-green-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+              Calculate <span className="text-green-600">Your Investment</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Use our interactive calculator to estimate costs for renting, leasing, or purchasing agricultural land based on your specific requirements.
+            </p>
+          </div>
+          
+          <PricingCalculator />
         </div>
       </section>
 
