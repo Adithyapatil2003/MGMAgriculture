@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,8 +18,20 @@ const Index = () => {
   const contactSectionRef = useRef<HTMLElement>(null);
   const { toast } = useToast();
 
-  // New images with priority order
+  // Updated images array with new uploads at the beginning for priority
   const propertyImages = [
+    // New agricultural operation images - priority display
+    "/lovable-uploads/c23fb84a-1c4d-424e-9be9-f611df8af529.png",
+    "/lovable-uploads/58897bf2-e2c7-42b6-883f-beb2ad1624ba.png",
+    "/lovable-uploads/5b735977-0b2c-407d-967f-d881823d2ec8.png",
+    "/lovable-uploads/bea40f84-a004-4f23-b8fe-2e63b689f86b.png",
+    "/lovable-uploads/179067ab-025a-438a-90ce-90fcac031901.png",
+    "/lovable-uploads/4fb39deb-9615-495c-8be9-3430beb07cd6.png",
+    "/lovable-uploads/135d6072-056c-4ac2-9628-7d20aba50163.png",
+    "/lovable-uploads/01780aa3-ff69-4dac-9e6e-dd253d419e2c.png",
+    "/lovable-uploads/596771fc-9a47-4aaa-b7c1-fa8e031fe6a2.png",
+    "/lovable-uploads/d6e9ece8-5c25-43ed-b7ee-ec17593859b4.png",
+    // Previous priority images
     "/lovable-uploads/ece37575-ccee-478c-8cba-8db9e133eda4.png",
     "/lovable-uploads/bf1f0143-e143-40d0-a44e-a4a62c2dd600.png",
     "/lovable-uploads/0b09419d-486e-498b-8051-e600b4a1f8db.png",
@@ -235,7 +246,7 @@ Thank you.
     setCustomerMessage("");
   };
 
-  // Auto-change background images
+  // Auto-change background images with smooth transitions
   useEffect(() => {
     const interval = setInterval(() => {
       setSelectedImage((prev) => (prev + 1) % propertyImages.length);
@@ -320,14 +331,14 @@ Thank you.
           </div>
         </div>
 
-        {/* Image Navigation Dots */}
+        {/* Enhanced Image Navigation Dots with smooth transitions */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
           {propertyImages.map((_, index) => (
             <button
               key={index}
               onClick={() => setSelectedImage(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                selectedImage === index ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'
+              className={`w-3 h-3 rounded-full transition-all duration-500 ease-in-out ${
+                selectedImage === index ? 'bg-white scale-125 shadow-lg' : 'bg-white/50 hover:bg-white/75 hover:scale-110'
               }`}
             />
           ))}
@@ -534,13 +545,13 @@ Thank you.
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Property Images Gallery */}
+            {/* Property Images Gallery with enhanced smooth transitions */}
             <div className="space-y-4">
               <div className="relative h-80 rounded-2xl overflow-hidden shadow-xl group">
                 <img 
                   src={propertyImages[selectedImage]} 
                   alt="Property view"
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                  className="w-full h-full object-cover transition-all duration-700 ease-in-out hover:scale-110"
                 />
                 <button
                   onClick={() => downloadImage(propertyImages[selectedImage], `property-image-${selectedImage + 1}.png`)}
@@ -554,14 +565,14 @@ Thank you.
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`relative h-20 rounded-lg overflow-hidden shadow-md transition-all duration-300 ${
-                      selectedImage === index ? 'ring-4 ring-green-500 scale-105' : 'hover:scale-105 hover:shadow-lg'
+                    className={`relative h-20 rounded-lg overflow-hidden shadow-md transition-all duration-500 ease-in-out ${
+                      selectedImage === index ? 'ring-4 ring-green-500 scale-105 shadow-xl' : 'hover:scale-105 hover:shadow-lg hover:ring-2 hover:ring-green-300'
                     }`}
                   >
                     <img 
                       src={image} 
                       alt={`Property view ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-300"
                     />
                   </button>
                 ))}
@@ -572,14 +583,14 @@ Thank you.
                     <button
                       key={index + 4}
                       onClick={() => setSelectedImage(index + 4)}
-                      className={`relative h-20 rounded-lg overflow-hidden shadow-md transition-all duration-300 ${
-                        selectedImage === index + 4 ? 'ring-4 ring-green-500 scale-105' : 'hover:scale-105 hover:shadow-lg'
+                      className={`relative h-20 rounded-lg overflow-hidden shadow-md transition-all duration-500 ease-in-out ${
+                        selectedImage === index + 4 ? 'ring-4 ring-green-500 scale-105 shadow-xl' : 'hover:scale-105 hover:shadow-lg hover:ring-2 hover:ring-green-300'
                       }`}
                     >
                       <img 
                         src={image} 
                         alt={`Property view ${index + 5}`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-300"
                       />
                     </button>
                   ))}
