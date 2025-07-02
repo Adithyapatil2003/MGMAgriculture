@@ -20,14 +20,20 @@ const PricingCalculator = () => {
   const [gunthas, setGunthas] = useState(0);
   const [calculationType, setCalculationType] = useState('rent');
   const [rentDuration, setRentDuration] = useState(1);
-  const [leaseDuration, setLeaseDuration] = useState(5);
+  const [leaseDuration, setLeaseDuration] = useState(3);
+  
+  // Price range sliders
+  const [rentPrice, setRentPrice] = useState([37500]); // Default to middle of 25,000-50,000
+  const [leasePrice, setLeasePrice] = useState([750000]); // Default to middle of 5-10 lakhs
+  const [salePrice, setSalePrice] = useState([200000]); // Default to middle of 1.5-2.5 lakhs per guntha
+  
   const [result, setResult] = useState<CalculationResult | null>(null);
 
-  // Pricing constants based on the property information
+  // Pricing ranges
   const pricing = {
     rent: { min: 25000, max: 50000, advance: 100000 },
-    lease: { pricePerAcre: 1000000, duration: 5 },
-    sale: { minPerGuntha: 150000, maxPerGuntha: 250000 }
+    lease: { min: 500000, max: 1000000 }, // 5-10 lakhs per acre
+    sale: { min: 150000, max: 250000 } // 1.5-2.5 lakhs per guntha
   };
 
   const calculatePrice = () => {
@@ -37,31 +43,32 @@ const PricingCalculator = () => {
 
     switch (calculationType) {
       case 'rent':
-        const avgRentPerAcre = (pricing.rent.min + pricing.rent.max) / 2;
-        const annualRent = avgRentPerAcre * totalAcres;
+        const selectedRentPrice = rentPrice[0];
+        const annualRent = selectedRentPrice * totalAcres;
         const totalRentCost = annualRent * rentDuration;
         calculationResult = {
           totalCost: totalRentCost,
           monthlyPayment: annualRent / 12,
           advancePayment: pricing.rent.advance,
-          description: `${rentDuration} year(s) rental for ${totalAcres.toFixed(2)} acres`
+          description: `${rentDuration} year(s) rental for ${totalAcres.toFixed(2)} acres at ₹${selectedRentPrice.toLocaleString()}/acre/year`
         };
         break;
 
       case 'lease':
-        const leaseCost = pricing.lease.pricePerAcre * totalAcres * (leaseDuration / 5);
+        const selectedLeasePrice = leasePrice[0];
+        const leaseCost = selectedLeasePrice * totalAcres * (leaseDuration / 3); // Base price is for 3 years
         calculationResult = {
           totalCost: leaseCost,
-          description: `${leaseDuration} year lease for ${totalAcres.toFixed(2)} acres`
+          description: `${leaseDuration} year lease for ${totalAcres.toFixed(2)} acres at ₹${selectedLeasePrice.toLocaleString()}/acre for 3 years`
         };
         break;
 
       case 'sale':
-        const avgSalePrice = (pricing.sale.minPerGuntha + pricing.sale.maxPerGuntha) / 2;
-        const purchaseCost = avgSalePrice * totalGunthas;
+        const selectedSalePrice = salePrice[0];
+        const purchaseCost = selectedSalePrice * totalGunthas;
         calculationResult = {
           totalCost: purchaseCost,
-          description: `Purchase of ${totalAcres.toFixed(2)} acres (${totalGunthas.toFixed(0)} gunthas)`
+          description: `Purchase of ${totalAcres.toFixed(2)} acres (${totalGunthas.toFixed(0)} gunthas) at ₹${selectedSalePrice.toLocaleString()}/guntha`
         };
         break;
 
@@ -161,6 +168,79 @@ const PricingCalculator = () => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Price Range Selection */}
+          {calculationType === 'rent' && (
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold text-gray-800">Rental Price Range</h3>
+              <div>
+                <Label htmlFor="rentPrice" className="text-base font-medium mb-3 block">
+                  Price per acre per year: ₹{rentPrice[0].toLocaleString('en-IN')}
+                </Label>
+                <Slider
+                  id="rentPrice"
+                  min={pricing.rent.min}
+                  max={pricing.rent.max}
+                  step={2500}
+                  value={rentPrice}
+                  onValueChange={setRentPrice}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-sm text-gray-500 mt-1">
+                  <span>₹25,000</span>
+                  <span>₹50,000</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {calculationType === 'lease' && (
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold text-gray-800">Lease Price Range</h3>
+              <div>
+                <Label htmlFor="leasePrice" className="text-base font-medium mb-3 block">
+                  Price per acre (3-year base): ₹{(leasePrice[0] / 100000).toFixed(1)} Lakhs
+                </Label>
+                <Slider
+                  id="leasePrice"
+                  min={pricing.lease.min}
+                  max={pricing.lease.max}
+                  step={50000}
+                  value={leasePrice}
+                  onValueChange={setLeasePrice}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-sm text-gray-500 mt-1">
+                  <span>₹5 Lakhs</span>
+                  <span>₹10 Lakhs</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {calculationType === 'sale' && (
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold text-gray-800">Sale Price Range</h3>
+              <div>
+                <Label htmlFor="salePrice" className="text-base font-medium mb-3 block">
+                  Price per guntha: ₹{(salePrice[0] / 100000).toFixed(2)} Lakhs
+                </Label>
+                <Slider
+                  id="salePrice"
+                  min={pricing.sale.min}
+                  max={pricing.sale.max}
+                  step={10000}
+                  value={salePrice}
+                  onValueChange={setSalePrice}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-sm text-gray-500 mt-1">
+                  <span>₹1.5 Lakhs</span>
+                  <span>₹2.5 Lakhs</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Duration Selection for Rent/Lease */}
           {calculationType === 'rent' && (
