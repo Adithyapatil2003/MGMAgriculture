@@ -9,7 +9,216 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      inquiries: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          land_listing_id: string | null
+          message: string
+          name: string
+          phone: string | null
+          status: Database["public"]["Enums"]["inquiry_status"] | null
+          subject: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          land_listing_id?: string | null
+          message: string
+          name: string
+          phone?: string | null
+          status?: Database["public"]["Enums"]["inquiry_status"] | null
+          subject: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          land_listing_id?: string | null
+          message?: string
+          name?: string
+          phone?: string | null
+          status?: Database["public"]["Enums"]["inquiry_status"] | null
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inquiries_land_listing_id_fkey"
+            columns: ["land_listing_id"]
+            isOneToOne: false
+            referencedRelation: "land_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      land_listings: {
+        Row: {
+          area_acres: number
+          created_at: string | null
+          description: string | null
+          district: string
+          features: string[] | null
+          id: string
+          images: string[] | null
+          is_available: boolean | null
+          land_type: Database["public"]["Enums"]["land_type"]
+          location: string
+          owner_id: string
+          price_per_acre: number
+          state: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          area_acres: number
+          created_at?: string | null
+          description?: string | null
+          district: string
+          features?: string[] | null
+          id?: string
+          images?: string[] | null
+          is_available?: boolean | null
+          land_type: Database["public"]["Enums"]["land_type"]
+          location: string
+          owner_id: string
+          price_per_acre: number
+          state?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          area_acres?: number
+          created_at?: string | null
+          description?: string | null
+          district?: string
+          features?: string[] | null
+          id?: string
+          images?: string[] | null
+          is_available?: boolean | null
+          land_type?: Database["public"]["Enums"]["land_type"]
+          location?: string
+          owner_id?: string
+          price_per_acre?: number
+          state?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "land_listings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pricing_data: {
+        Row: {
+          average_price_per_acre: number
+          district: string
+          id: string
+          land_type: Database["public"]["Enums"]["land_type"]
+          last_updated: string | null
+          max_price_per_acre: number
+          min_price_per_acre: number
+        }
+        Insert: {
+          average_price_per_acre: number
+          district: string
+          id?: string
+          land_type: Database["public"]["Enums"]["land_type"]
+          last_updated?: string | null
+          max_price_per_acre: number
+          min_price_per_acre: number
+        }
+        Update: {
+          average_price_per_acre?: number
+          district?: string
+          id?: string
+          land_type?: Database["public"]["Enums"]["land_type"]
+          last_updated?: string | null
+          max_price_per_acre?: number
+          min_price_per_acre?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          full_name: string
+          id: string
+          location: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          full_name: string
+          id: string
+          location?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          location?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          location: string
+          price_per_unit: number | null
+          provider_id: string
+          service_name: string
+          unit_type: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          location: string
+          price_per_unit?: number | null
+          provider_id: string
+          service_name: string
+          unit_type?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          location?: string
+          price_per_unit?: number | null
+          provider_id?: string
+          service_name?: string
+          unit_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +227,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      inquiry_status: "pending" | "contacted" | "closed"
+      land_type: "coconut" | "areca" | "paddy" | "vegetable" | "fruit" | "mixed"
+      user_role: "farmer" | "landowner" | "service_provider" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +344,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      inquiry_status: ["pending", "contacted", "closed"],
+      land_type: ["coconut", "areca", "paddy", "vegetable", "fruit", "mixed"],
+      user_role: ["farmer", "landowner", "service_provider", "admin"],
+    },
   },
 } as const

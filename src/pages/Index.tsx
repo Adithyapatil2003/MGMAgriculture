@@ -1,27 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Palmtree, IndianRupee, Download, Send, MessageCircle } from "lucide-react";
+import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Palmtree, IndianRupee, Download, MessageCircle } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import PricingCalculator from "@/components/PricingCalculator";
+import EnhancedPricingCalculator from "@/components/EnhancedPricingCalculator";
+import InquiryForm from "@/components/InquiryForm";
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState(0);
-  const [customerName, setCustomerName] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
-  const [customerContact, setCustomerContact] = useState("");
-  const [customerMessage, setCustomerMessage] = useState("");
   const pricingSectionRef = useRef<HTMLElement>(null);
   const contactSectionRef = useRef<HTMLElement>(null);
   const { toast } = useToast();
 
-  // Updated images array with new uploads at the beginning for priority
   const propertyImages = [
-    // New agricultural operation images - priority display
     "/lovable-uploads/c23fb84a-1c4d-424e-9be9-f611df8af529.png",
     "/lovable-uploads/58897bf2-e2c7-42b6-883f-beb2ad1624ba.png",
     "/lovable-uploads/5b735977-0b2c-407d-967f-d881823d2ec8.png",
@@ -32,7 +24,6 @@ const Index = () => {
     "/lovable-uploads/01780aa3-ff69-4dac-9e6e-dd253d419e2c.png",
     "/lovable-uploads/596771fc-9a47-4aaa-b7c1-fa8e031fe6a2.png",
     "/lovable-uploads/d6e9ece8-5c25-43ed-b7ee-ec17593859b4.png",
-    // Previous priority images
     "/lovable-uploads/ece37575-ccee-478c-8cba-8db9e133eda4.png",
     "/lovable-uploads/bf1f0143-e143-40d0-a44e-a4a62c2dd600.png",
     "/lovable-uploads/0b09419d-486e-498b-8051-e600b4a1f8db.png",
@@ -43,7 +34,6 @@ const Index = () => {
     "/lovable-uploads/6df4ace9-c7b4-479a-ae0a-3163caa589b0.png",
     "/lovable-uploads/263818a0-abf1-4142-9702-bd6283783b37.png",
     "/lovable-uploads/3231cf4b-e544-4c17-a7c0-c7fe0d9975ae.png",
-    // Existing images after new ones
     "/lovable-uploads/383bd408-e4a2-4387-84ad-2f48464d4a60.png",
     "/lovable-uploads/7cc8736c-7a77-4093-8aeb-18b5536cb9e5.png",
     "/lovable-uploads/7af551e0-637a-41cb-a322-992c62c0c03d.png",
@@ -188,66 +178,6 @@ const Index = () => {
     });
   };
 
-  const handleInquirySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!customerName || !customerContact) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Create email for owners with email addresses
-    const emailSubject = encodeURIComponent("Property Inquiry - MGM Agricultural Land");
-    const emailBody = encodeURIComponent(`
-Dear Sir/Madam,
-
-I am interested in your MGM Premium Agricultural Lands property and would like to get more information.
-
-Customer Details:
-Name: ${customerName}
-Email: ${customerEmail || 'Not provided'}
-Contact Number: ${customerContact}
-Message: ${customerMessage || 'No additional message'}
-
-Property: 19 acres across 7 plots featuring coconut farms, paddy fields, and teak plantation
-Location: MUGTIHALLY & KAIDALA Villages, Nonavinakere, Tiptur Taluk, Tumkur District, Karnataka
-
-Please contact me at your earliest convenience.
-
-Thank you.
-    `);
-
-    const ownersWithEmail = owners.filter(owner => owner.email);
-    
-    // Send to email if available
-    if (ownersWithEmail.length > 0) {
-      const mailtoLink = `mailto:${ownersWithEmail[0].email}?subject=${emailSubject}&body=${emailBody}`;
-      window.open(mailtoLink, '_blank');
-      
-      toast({
-        title: "Inquiry Sent",
-        description: "Your inquiry has been sent via email to the property owners.",
-      });
-    } else {
-      toast({
-        title: "Error",
-        description: "No owner email available. Please contact them directly via phone.",
-        variant: "destructive",
-      });
-    }
-    
-    // Reset form
-    setCustomerName("");
-    setCustomerEmail("");
-    setCustomerContact("");
-    setCustomerMessage("");
-  };
-
-  // Auto-change background images with smooth transitions
   useEffect(() => {
     const interval = setInterval(() => {
       setSelectedImage((prev) => (prev + 1) % propertyImages.length);
@@ -346,103 +276,10 @@ Thank you.
         </div>
       </section>
 
-      {/* Inquiry Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-blue-800">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Property <span className="text-blue-200">Inquiry</span>
-            </h2>
-            <p className="text-xl text-blue-100 leading-relaxed mb-4">
-              Interested in this property? Send us your details and we'll get back to you.
-            </p>
-            <div className="flex items-center justify-center gap-4 text-blue-100">
-              <div className="flex items-center gap-2">
-                <Mail className="h-5 w-5" />
-                <span>Email</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-5 w-5" />
-                <span>Phone</span>
-              </div>
-            </div>
-          </div>
-          
-          <Card className="bg-white/10 backdrop-blur-md border-white/20">
-            <CardContent className="p-8">
-              <form onSubmit={handleInquirySubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="customerName" className="text-white text-base font-semibold mb-2 block">
-                      Customer Name *
-                    </Label>
-                    <Input
-                      id="customerName"
-                      type="text"
-                      value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
-                      className="bg-white/20 border-white/40 text-white placeholder:text-white/70"
-                      placeholder="Enter your full name"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="customerContact" className="text-white text-base font-semibold mb-2 block">
-                      Contact Number *
-                    </Label>
-                    <Input
-                      id="customerContact"
-                      type="tel"
-                      value={customerContact}
-                      onChange={(e) => setCustomerContact(e.target.value)}
-                      className="bg-white/20 border-white/40 text-white placeholder:text-white/70"
-                      placeholder="Enter your phone number"
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="customerEmail" className="text-white text-base font-semibold mb-2 block">
-                    Email Address (Optional)
-                  </Label>
-                  <Input
-                    id="customerEmail"
-                    type="email"
-                    value={customerEmail}
-                    onChange={(e) => setCustomerEmail(e.target.value)}
-                    className="bg-white/20 border-white/40 text-white placeholder:text-white/70"
-                    placeholder="Enter your email address"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="customerMessage" className="text-white text-base font-semibold mb-2 block">
-                    Message (Optional)
-                  </Label>
-                  <Textarea
-                    id="customerMessage"
-                    value={customerMessage}
-                    onChange={(e) => setCustomerMessage(e.target.value)}
-                    className="bg-white/20 border-white/40 text-white placeholder:text-white/70 min-h-[100px]"
-                    placeholder="Any specific questions or requirements..."
-                  />
-                </div>
-                <div className="text-center">
-                  <Button 
-                    type="submit"
-                    size="lg"
-                    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                  >
-                    <Send className="mr-2 h-5 w-5" />
-                    Send Inquiry via Email
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+      {/* Inquiry Section - Now using the new component */}
+      <InquiryForm />
 
-      {/* Pricing Calculator Section */}
+      {/* Pricing Calculator Section - Now using the enhanced component */}
       <section className="py-20 px-4 bg-gradient-to-r from-blue-50 to-green-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -450,11 +287,11 @@ Thank you.
               Calculate <span className="text-green-600">Your Investment</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Use our interactive calculator to estimate costs for renting, leasing, or purchasing agricultural land based on your specific requirements.
+              Use our smart calculator with real market data to estimate costs for renting, leasing, or purchasing agricultural land.
             </p>
           </div>
           
-          <PricingCalculator />
+          <EnhancedPricingCalculator />
         </div>
       </section>
 
