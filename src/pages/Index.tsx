@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Palmtree, IndianRupee, Download, MessageCircle } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import EnhancedPricingCalculator from "@/components/EnhancedPricingCalculator";
+import PricingCalculator from "@/components/PricingCalculator";
 import InquiryForm from "@/components/InquiryForm";
 
 const Index = () => {
@@ -203,7 +203,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50">
-      {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out"
@@ -262,7 +261,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Enhanced Image Navigation Dots with smooth transitions */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
           {propertyImages.map((_, index) => (
             <button
@@ -276,10 +274,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Inquiry Section - Now using the new component */}
       <InquiryForm />
 
-      {/* Pricing Calculator Section - Now using the enhanced component */}
       <section className="py-20 px-4 bg-gradient-to-r from-blue-50 to-green-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -287,15 +283,14 @@ const Index = () => {
               Calculate <span className="text-green-600">Your Investment</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Use our smart calculator with real market data to estimate costs for renting, leasing, or purchasing agricultural land.
+              Use our calculator to estimate costs for renting, leasing, or purchasing agricultural land.
             </p>
           </div>
           
-          <EnhancedPricingCalculator />
+          <PricingCalculator />
         </div>
       </section>
 
-      {/* Pricing Section */}
       <section ref={pricingSectionRef} className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -338,7 +333,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Plot Details Section */}
       <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -377,7 +371,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Property Details Section */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -399,7 +392,6 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Property Images Gallery with enhanced smooth transitions */}
             <div className="space-y-4">
               <div className="relative h-80 rounded-2xl overflow-hidden shadow-xl group">
                 <img 
@@ -452,7 +444,6 @@ const Index = () => {
               )}
             </div>
 
-            {/* Property Specifications */}
             <div className="space-y-8">
               <div>
                 <h3 className="text-3xl font-bold text-gray-800 mb-6">Land Specifications</h3>
@@ -488,7 +479,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
@@ -520,7 +510,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
       <section ref={contactSectionRef} className="py-20 bg-gradient-to-r from-green-600 to-green-800">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
@@ -616,7 +605,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="mb-8">

@@ -1,347 +1,275 @@
 
-import React, { useState } from 'react';
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Calculator, IndianRupee } from "lucide-react";
-
-interface CalculationResult {
-  totalCost: number;
-  monthlyPayment?: number;
-  advancePayment?: number;
-  description: string;
-}
+import { Calculator, IndianRupee, TrendingUp, BarChart3 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const PricingCalculator = () => {
-  const [acres, setAcres] = useState([1]);
-  const [gunthas, setGunthas] = useState(0);
-  const [calculationType, setCalculationType] = useState('rent');
-  const [rentDuration, setRentDuration] = useState(1);
-  const [leaseDuration, setLeaseDuration] = useState(3);
-  
-  // Price range sliders
-  const [rentPrice, setRentPrice] = useState([37500]); // Default to middle of 25,000-50,000
-  const [leasePrice, setLeasePrice] = useState([750000]); // Default to middle of 5-10 lakhs
-  const [salePrice, setSalePrice] = useState([200000]); // Default to middle of 1.5-2.5 lakhs per guntha
-  
-  const [result, setResult] = useState<CalculationResult | null>(null);
+  const [landType, setLandType] = useState<string>("");
+  const [district, setDistrict] = useState<string>("");
+  const [acres, setAcres] = useState<string>("");
+  const [gunthas, setGunthas] = useState<string>("");
+  const [calculationType, setCalculationType] = useState<string>("rent");
+  const [results, setResults] = useState<any>(null);
+  const { toast } = useToast();
 
-  // Pricing ranges
-  const pricing = {
-    rent: { min: 25000, max: 50000, advance: 100000 },
-    lease: { min: 500000, max: 1000000 }, // 5-10 lakhs per acre
-    sale: { min: 150000, max: 250000 } // 1.5-2.5 lakhs per guntha
+  // Static pricing data for different land types and districts
+  const staticPricingData = {
+    coconut: {
+      Hassan: { min: 300000, max: 800000, avg: 550000 },
+      Shimoga: { min: 250000, max: 700000, avg: 475000 },
+      Tumkur: { min: 400000, max: 900000, avg: 650000 }
+    },
+    areca: {
+      Hassan: { min: 800000, max: 1500000, avg: 1150000 },
+      Shimoga: { min: 600000, max: 1200000, avg: 900000 },
+      Chikmagalur: { min: 700000, max: 1400000, avg: 1050000 }
+    },
+    paddy: {
+      Hassan: { min: 200000, max: 500000, avg: 350000 },
+      Mandya: { min: 250000, max: 600000, avg: 425000 }
+    },
+    vegetable: {
+      Kolar: { min: 300000, max: 700000, avg: 500000 }
+    },
+    fruit: {
+      Hassan: { min: 400000, max: 1000000, avg: 700000 }
+    }
   };
 
-  const calculatePrice = () => {
-    const totalAcres = acres[0] + (gunthas / 40); // 40 gunthas = 1 acre
-    const totalGunthas = (totalAcres * 40);
-    let calculationResult: CalculationResult;
+  const getAvailableDistricts = (selectedLandType: string) => {
+    if (!selectedLandType || !staticPricingData[selectedLandType as keyof typeof staticPricingData]) {
+      return [];
+    }
+    return Object.keys(staticPricingData[selectedLandType as keyof typeof staticPricingData]);
+  };
 
+  const calculatePricing = () => {
+    if (!landType || !district || !acres) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const totalAcres = parseFloat(acres) + (parseFloat(gunthas || "0") / 40);
+    const pricing = staticPricingData[landType as keyof typeof staticPricingData]?.[district];
+    
+    if (!pricing) {
+      toast({
+        title: "No Data Available",
+        description: "No pricing data available for selected land type and district",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    let calculations;
+    
     switch (calculationType) {
-      case 'rent':
-        const selectedRentPrice = rentPrice[0];
-        const annualRent = selectedRentPrice * totalAcres;
-        const totalRentCost = annualRent * rentDuration;
-        calculationResult = {
-          totalCost: totalRentCost,
-          monthlyPayment: annualRent / 12,
-          advancePayment: pricing.rent.advance,
-          description: `${rentDuration} year(s) rental for ${totalAcres.toFixed(2)} acres at ₹${selectedRentPrice.toLocaleString()}/acre/year`
+      case "rent":
+        calculations = {
+          minTotal: (pricing.min * 0.05 * totalAcres).toFixed(0),
+          maxTotal: (pricing.max * 0.08 * totalAcres).toFixed(0),
+          avgTotal: (pricing.avg * 0.065 * totalAcres).toFixed(0),
+          period: "per year",
+          advance: (pricing.avg * 0.1 * totalAcres).toFixed(0)
         };
         break;
-
-      case 'lease':
-        const selectedLeasePrice = leasePrice[0];
-        const leaseCost = selectedLeasePrice * totalAcres * (leaseDuration / 3); // Base price is for 3 years
-        calculationResult = {
-          totalCost: leaseCost,
-          description: `${leaseDuration} year lease for ${totalAcres.toFixed(2)} acres at ₹${selectedLeasePrice.toLocaleString()}/acre for 3 years`
+      case "lease":
+        calculations = {
+          minTotal: (pricing.min * 0.4 * totalAcres).toFixed(0),
+          maxTotal: (pricing.max * 0.6 * totalAcres).toFixed(0),
+          avgTotal: (pricing.avg * 0.5 * totalAcres).toFixed(0),
+          period: "for 5 years",
+          advance: "Full payment upfront"
         };
         break;
-
-      case 'sale':
-        const selectedSalePrice = salePrice[0];
-        const purchaseCost = selectedSalePrice * totalGunthas;
-        calculationResult = {
-          totalCost: purchaseCost,
-          description: `Purchase of ${totalAcres.toFixed(2)} acres (${totalGunthas.toFixed(0)} gunthas) at ₹${selectedSalePrice.toLocaleString()}/guntha`
+      case "sale":
+        calculations = {
+          minTotal: (pricing.min * totalAcres).toFixed(0),
+          maxTotal: (pricing.max * totalAcres).toFixed(0),
+          avgTotal: (pricing.avg * totalAcres).toFixed(0),
+          period: "total price",
+          advance: "Full ownership"
         };
         break;
-
       default:
-        calculationResult = {
-          totalCost: 0,
-          description: 'Please select a calculation type'
-        };
+        return;
     }
 
-    setResult(calculationResult);
-  };
-
-  const formatCurrency = (amount: number) => {
-    if (amount >= 10000000) {
-      return `₹${(amount / 10000000).toFixed(2)} Crores`;
-    } else if (amount >= 100000) {
-      return `₹${(amount / 100000).toFixed(2)} Lakhs`;
-    } else {
-      return `₹${amount.toLocaleString('en-IN')}`;
-    }
+    setResults({
+      ...calculations,
+      totalAcres: totalAcres.toFixed(2),
+      pricePerAcre: pricing.avg
+    });
   };
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      <Card className="bg-white shadow-xl border-0">
+      <Card className="shadow-xl border-0">
         <CardHeader className="text-center pb-6">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Calculator className="h-8 w-8 text-green-600" />
           </div>
-          <CardTitle className="text-3xl font-bold text-gray-800">
-            Pricing Calculator
-          </CardTitle>
-          <CardDescription className="text-lg text-gray-600">
-            Calculate costs for rent, lease, or purchase of agricultural land
+          <CardTitle className="text-2xl font-bold text-gray-800">Smart Pricing Calculator</CardTitle>
+          <CardDescription className="text-gray-600">
+            Get accurate pricing estimates based on market data
           </CardDescription>
         </CardHeader>
         
-        <CardContent className="space-y-8">
-          {/* Land Area Selection */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-gray-800">Land Area</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="acres" className="text-base font-medium mb-3 block">
-                  Acres: {acres[0]}
-                </Label>
-                <Slider
-                  id="acres"
-                  min={1}
-                  max={19}
-                  step={1}
-                  value={acres}
-                  onValueChange={setAcres}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-gray-500 mt-1">
-                  <span>1 acre</span>
-                  <span>19 acres</span>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="gunthas" className="text-base font-medium mb-2 block">
-                  Additional Gunthas
-                </Label>
-                <Input
-                  id="gunthas"
-                  type="number"
-                  min="0"
-                  max="39"
-                  value={gunthas}
-                  onChange={(e) => setGunthas(Number(e.target.value))}
-                  className="text-base h-12"
-                  placeholder="0-39 gunthas"
-                />
-              </div>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="landType" className="text-base font-semibold mb-2 block">
+                Land Type *
+              </Label>
+              <Select value={landType} onValueChange={(value) => {
+                setLandType(value);
+                setDistrict(""); // Reset district when land type changes
+              }}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select land type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="coconut">Coconut</SelectItem>
+                  <SelectItem value="areca">Areca</SelectItem>
+                  <SelectItem value="paddy">Paddy</SelectItem>
+                  <SelectItem value="vegetable">Vegetable</SelectItem>
+                  <SelectItem value="fruit">Fruit</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <div className="bg-green-50 p-4 rounded-lg">
-              <p className="text-green-800 font-medium">
-                Total Area: {(acres[0] + (gunthas / 40)).toFixed(2)} acres 
-                ({(acres[0] * 40 + gunthas).toFixed(0)} gunthas)
-              </p>
+
+            <div>
+              <Label htmlFor="district" className="text-base font-semibold mb-2 block">
+                District *
+              </Label>
+              <Select value={district} onValueChange={setDistrict} disabled={!landType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select district" />
+                </SelectTrigger>
+                <SelectContent>
+                  {getAvailableDistricts(landType).map((dist) => (
+                    <SelectItem key={dist} value={dist}>
+                      {dist}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="acres" className="text-base font-semibold mb-2 block">
+                Area (Acres) *
+              </Label>
+              <Input
+                id="acres"
+                type="number"
+                value={acres}
+                onChange={(e) => setAcres(e.target.value)}
+                placeholder="Enter acres"
+                min="0"
+                step="0.1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="gunthas" className="text-base font-semibold mb-2 block">
+                Gunthas (Optional)
+              </Label>
+              <Input
+                id="gunthas"
+                type="number"
+                value={gunthas}
+                onChange={(e) => setGunthas(e.target.value)}
+                placeholder="Enter gunthas (1 acre = 40 gunthas)"
+                min="0"
+                max="39"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <Label htmlFor="calculationType" className="text-base font-semibold mb-2 block">
+                Calculation Type *
+              </Label>
+              <Select value={calculationType} onValueChange={setCalculationType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select calculation type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="rent">Rental (Annual)</SelectItem>
+                  <SelectItem value="lease">Lease (5 Years)</SelectItem>
+                  <SelectItem value="sale">Sale (Purchase)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          {/* Calculation Type */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-gray-800">Calculation Type</h3>
-            <Select value={calculationType} onValueChange={setCalculationType}>
-              <SelectTrigger className="h-12 text-base">
-                <SelectValue placeholder="Select calculation type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="rent">Rental</SelectItem>
-                <SelectItem value="lease">Lease</SelectItem>
-                <SelectItem value="sale">Purchase</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Price Range Selection */}
-          {calculationType === 'rent' && (
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-800">Rental Price Range</h3>
-              <div>
-                <Label htmlFor="rentPrice" className="text-base font-medium mb-3 block">
-                  Price per acre per year: ₹{rentPrice[0].toLocaleString('en-IN')}
-                </Label>
-                <Slider
-                  id="rentPrice"
-                  min={pricing.rent.min}
-                  max={pricing.rent.max}
-                  step={2500}
-                  value={rentPrice}
-                  onValueChange={setRentPrice}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-gray-500 mt-1">
-                  <span>₹25,000</span>
-                  <span>₹50,000</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {calculationType === 'lease' && (
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-800">Lease Price Range</h3>
-              <div>
-                <Label htmlFor="leasePrice" className="text-base font-medium mb-3 block">
-                  Price per acre (3-year base): ₹{(leasePrice[0] / 100000).toFixed(1)} Lakhs
-                </Label>
-                <Slider
-                  id="leasePrice"
-                  min={pricing.lease.min}
-                  max={pricing.lease.max}
-                  step={50000}
-                  value={leasePrice}
-                  onValueChange={setLeasePrice}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-gray-500 mt-1">
-                  <span>₹5 Lakhs</span>
-                  <span>₹10 Lakhs</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {calculationType === 'sale' && (
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-800">Sale Price Range</h3>
-              <div>
-                <Label htmlFor="salePrice" className="text-base font-medium mb-3 block">
-                  Price per guntha: ₹{(salePrice[0] / 100000).toFixed(2)} Lakhs
-                </Label>
-                <Slider
-                  id="salePrice"
-                  min={pricing.sale.min}
-                  max={pricing.sale.max}
-                  step={10000}
-                  value={salePrice}
-                  onValueChange={setSalePrice}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-gray-500 mt-1">
-                  <span>₹1.5 Lakhs</span>
-                  <span>₹2.5 Lakhs</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Duration Selection for Rent/Lease */}
-          {calculationType === 'rent' && (
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-800">Rental Duration</h3>
-              <div>
-                <Label htmlFor="rentDuration" className="text-base font-medium mb-2 block">
-                  Years: {rentDuration}
-                </Label>
-                <Slider
-                  id="rentDuration"
-                  min={1}
-                  max={10}
-                  step={1}
-                  value={[rentDuration]}
-                  onValueChange={(value) => setRentDuration(value[0])}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-gray-500 mt-1">
-                  <span>1 year</span>
-                  <span>10 years</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {calculationType === 'lease' && (
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-800">Lease Duration</h3>
-              <div>
-                <Label htmlFor="leaseDuration" className="text-base font-medium mb-2 block">
-                  Years: {leaseDuration}
-                </Label>
-                <Slider
-                  id="leaseDuration"
-                  min={3}
-                  max={20}
-                  step={1}
-                  value={[leaseDuration]}
-                  onValueChange={(value) => setLeaseDuration(value[0])}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-gray-500 mt-1">
-                  <span>3 years</span>
-                  <span>20 years</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Calculate Button */}
           <div className="text-center">
             <Button 
-              onClick={calculatePrice}
+              onClick={calculatePricing}
               size="lg"
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold rounded-full"
             >
               <Calculator className="mr-2 h-5 w-5" />
-              Calculate Price
+              Calculate Pricing
             </Button>
           </div>
 
-          {/* Results */}
-          {result && (
-            <div className="mt-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl border border-green-200">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                <IndianRupee className="h-6 w-6 mr-2 text-green-600" />
-                Calculation Results
+          {results && (
+            <div className="mt-8 space-y-4">
+              <h3 className="text-xl font-bold text-center text-gray-800 mb-6">
+                Pricing Estimate for {results.totalAcres} acres
               </h3>
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <p className="text-sm text-gray-600 mb-1">{result.description}</p>
-                  <p className="text-3xl font-bold text-green-600">
-                    {formatCurrency(result.totalCost)}
-                  </p>
-                </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="bg-blue-50 border-blue-200">
+                  <CardContent className="p-4 text-center">
+                    <TrendingUp className="h-6 w-6 text-blue-600 mx-auto mb-2" />
+                    <div className="text-sm text-blue-700 font-medium">Minimum</div>
+                    <div className="text-xl font-bold text-blue-800 flex items-center justify-center">
+                      <IndianRupee className="h-5 w-5 mr-1" />
+                      {parseInt(results.minTotal).toLocaleString()}
+                    </div>
+                  </CardContent>
+                </Card>
                 
-                {result.monthlyPayment && (
-                  <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <p className="text-sm text-gray-600 mb-1">Monthly Payment</p>
-                    <p className="text-xl font-semibold text-blue-600">
-                      {formatCurrency(result.monthlyPayment)}
-                    </p>
-                  </div>
-                )}
+                <Card className="bg-green-50 border-green-200">
+                  <CardContent className="p-4 text-center">
+                    <BarChart3 className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                    <div className="text-sm text-green-700 font-medium">Average</div>
+                    <div className="text-xl font-bold text-green-800 flex items-center justify-center">
+                      <IndianRupee className="h-5 w-5 mr-1" />
+                      {parseInt(results.avgTotal).toLocaleString()}
+                    </div>
+                  </CardContent>
+                </Card>
                 
-                {result.advancePayment && (
-                  <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <p className="text-sm text-gray-600 mb-1">Security Deposit/Advance</p>
-                    <p className="text-xl font-semibold text-amber-600">
-                      {formatCurrency(result.advancePayment)}
-                    </p>
-                  </div>
-                )}
-
-                <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                  <p className="text-sm text-amber-800">
-                    <strong>Note:</strong> These are estimated calculations based on current market rates. 
-                    Actual prices may vary based on specific plot location, soil quality, and other factors. 
-                    Please contact the owners for precise quotations.
-                  </p>
+                <Card className="bg-amber-50 border-amber-200">
+                  <CardContent className="p-4 text-center">
+                    <TrendingUp className="h-6 w-6 text-amber-600 mx-auto mb-2" />
+                    <div className="text-sm text-amber-700 font-medium">Maximum</div>
+                    <div className="text-xl font-bold text-amber-800 flex items-center justify-center">
+                      <IndianRupee className="h-5 w-5 mr-1" />
+                      {parseInt(results.maxTotal).toLocaleString()}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="text-center text-gray-700">
+                  <p className="font-semibold">Calculation Details:</p>
+                  <p>Total Area: {results.totalAcres} acres</p>
+                  <p>Type: {calculationType.charAt(0).toUpperCase() + calculationType.slice(1)} {results.period}</p>
+                  <p>Advance/Security: {results.advance}</p>
                 </div>
               </div>
             </div>

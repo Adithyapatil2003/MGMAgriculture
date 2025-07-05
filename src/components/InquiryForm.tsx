@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 const InquiryForm = () => {
   const [customerName, setCustomerName] = useState("");
@@ -31,21 +30,8 @@ const InquiryForm = () => {
 
     setIsSubmitting(true);
 
-    try {
-      const { error } = await supabase
-        .from('inquiries')
-        .insert({
-          name: customerName,
-          email: customerEmail,
-          phone: customerContact,
-          subject: "Property Inquiry - MGM Agricultural Land",
-          message: customerMessage || "Property inquiry from website",
-        });
-
-      if (error) {
-        throw error;
-      }
-
+    // Simulate form submission
+    setTimeout(() => {
       toast({
         title: "Success",
         description: "Your inquiry has been submitted successfully. We'll contact you soon!",
@@ -56,17 +42,8 @@ const InquiryForm = () => {
       setCustomerEmail("");
       setCustomerContact("");
       setCustomerMessage("");
-
-    } catch (error) {
-      console.error('Error submitting inquiry:', error);
-      toast({
-        title: "Error",
-        description: "Failed to submit inquiry. Please try again or contact us directly.",
-        variant: "destructive",
-      });
-    } finally {
       setIsSubmitting(false);
-    }
+    }, 1000);
   };
 
   return (
