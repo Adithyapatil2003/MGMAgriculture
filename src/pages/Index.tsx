@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Palmtree, IndianRupee, Download, MessageCircle } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import PricingCalculator from "@/components/PricingCalculator";
 import InquiryForm from "@/components/InquiryForm";
 
 const Index = () => {
@@ -260,21 +259,6 @@ const Index = () => {
       </section>
 
       <InquiryForm />
-
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-50 to-green-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-              Calculate <span className="text-green-600">Your Investment</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Use our calculator to estimate costs for renting, leasing, or purchasing agricultural land.
-            </p>
-          </div>
-          
-          <PricingCalculator />
-        </div>
-      </section>
 
       <section ref={pricingSectionRef} className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
