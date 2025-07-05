@@ -186,21 +186,6 @@ const Index = () => {
     return () => clearInterval(interval);
   }, [propertyImages.length]);
 
-  useEffect(() => {
-    const disableCopy = (e: ClipboardEvent) => {
-      e.preventDefault();
-    };
-    const disableRightClick = (e: MouseEvent) => e.preventDefault();
-
-    document.addEventListener("copy", disableCopy);
-    document.addEventListener("contextmenu", disableRightClick);
-
-    return () => {
-      document.removeEventListener("copy", disableCopy);
-      document.removeEventListener("contextmenu", disableRightClick);
-    };
-  }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50">
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -613,6 +598,28 @@ const Index = () => {
             <p className="text-gray-400">Karnataka • Tumkur District • Tiptur Taluk</p>
           </div>
           <div className="border-t border-gray-800 pt-8">
+            <div className="mb-6">
+              <h4 className="text-xl font-semibold mb-4 text-green-400">Designed and Developed by</h4>
+              <div className="bg-gray-800 p-6 rounded-lg max-w-md mx-auto">
+                <h5 className="text-lg font-bold mb-3">M Deepak</h5>
+                <div className="space-y-2">
+                  <a 
+                    href="tel:9845326568" 
+                    className="flex items-center justify-center text-gray-300 hover:text-white transition-colors"
+                  >
+                    <Phone className="mr-2 h-4 w-4" />
+                    9845326568
+                  </a>
+                  <a 
+                    href="mailto:mm.deepak2003@gmail.com" 
+                    className="flex items-center justify-center text-gray-300 hover:text-white transition-colors"
+                  >
+                    <Mail className="mr-2 h-4 w-4" />
+                    mm.deepak2003@gmail.com
+                  </a>
+                </div>
+              </div>
+            </div>
             <p className="text-gray-500">© {new Date().getFullYear()} Agricultural Lands Sales. All rights reserved.</p>
           </div>
         </div>
