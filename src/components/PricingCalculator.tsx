@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const PricingCalculator = () => {
   const [acres, setAcres] = useState<string>("");
+  const [gunthas, setGunthas] = useState<string>("");
   const [calculationType, setCalculationType] = useState<string>("rent");
   const [priceRange, setPriceRange] = useState<number[]>([25000]);
   const [results, setResults] = useState<any>(null);
@@ -38,6 +39,20 @@ const PricingCalculator = () => {
     }
   };
 
+  // Format number in Indian system (crore, lakh, thousand)
+  const formatIndianNumber = (num: number): string => {
+    if (num >= 10000000) { // 1 crore
+      return `${(num / 10000000).toFixed(2)} crore`;
+    } else if (num >= 100000) { // 1 lakh
+      return `${(num / 100000).toFixed(2)} lakh`;
+    } else if (num >= 1000) { // 1 thousand
+      return `${(num / 1000).toFixed(0)} thousand`;
+    } else if (num >= 100) { // hundreds
+      return `${(num / 100).toFixed(0)} hundred`;
+    }
+    return num.toString();
+  };
+
   const getCurrentPricing = () => {
     return pricingRanges[calculationType as keyof typeof pricingRanges];
   };
@@ -58,7 +73,7 @@ const PricingCalculator = () => {
       return;
     }
 
-    const totalAcres = parseFloat(acres);
+    const totalAcres = parseFloat(acres) + (parseFloat(gunthas || "0") / 40);
     const selectedPrice = priceRange[0];
     const pricing = getCurrentPricing();
 
@@ -70,8 +85,9 @@ const PricingCalculator = () => {
           selectedPrice: selectedPrice,
           totalCost: (selectedPrice * totalAcres).toFixed(0),
           period: "per year",
-          advance: (selectedPrice * totalAcres * 0.2).toFixed(0), // 20% advance
-          unit: "per acre"
+          advance: "1 lakh", // Fixed ₹1 lakh for rent
+          unit: "per acre",
+          showAdvance: true
         };
         break;
       case "lease":
@@ -79,8 +95,9 @@ const PricingCalculator = () => {
           selectedPrice: selectedPrice,
           totalCost: (selectedPrice * totalAcres).toFixed(0),
           period: "for 5 years",
-          advance: "Full payment upfront",
-          unit: "per acre"
+          advance: "",
+          unit: "per acre",
+          showAdvance: false
         };
         break;
       case "sale":
@@ -89,8 +106,9 @@ const PricingCalculator = () => {
           selectedPrice: selectedPrice,
           totalCost: (selectedPrice * totalGunthas).toFixed(0),
           period: "total price",
-          advance: "Full ownership",
-          unit: "per guntha"
+          advance: "",
+          unit: "per guntha",
+          showAdvance: false
         };
         break;
       default:
@@ -121,7 +139,7 @@ const PricingCalculator = () => {
         </CardHeader>
         
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <Label htmlFor="calculationType" className="text-base font-semibold mb-2 block">
                 Calculation Type *
@@ -140,7 +158,7 @@ const PricingCalculator = () => {
 
             <div>
               <Label htmlFor="acres" className="text-base font-semibold mb-2 block">
-                Area (Acres) *
+                Acres *
               </Label>
               <Input
                 id="acres"
@@ -153,14 +171,29 @@ const PricingCalculator = () => {
               />
             </div>
 
-            <div className="md:col-span-2">
+            <div>
+              <Label htmlFor="gunthas" className="text-base font-semibold mb-2 block">
+                Gunthas
+              </Label>
+              <Input
+                id="gunthas"
+                type="number"
+                value={gunthas}
+                onChange={(e) => setGunthas(e.target.value)}
+                placeholder="Enter gunthas (1 acre = 40 gunthas)"
+                min="0"
+                max="39"
+              />
+            </div>
+
+            <div className="md:col-span-3">
               <Label className="text-base font-semibold mb-4 block">
-                Price Range: ₹{priceRange[0].toLocaleString()} {currentPricing.unit}
+                Price Range: ₹{formatIndianNumber(priceRange[0])} {currentPricing.unit}
               </Label>
               <div className="px-4 py-2 bg-gray-50 rounded-lg mb-4">
                 <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>₹{currentPricing.min.toLocaleString()}</span>
-                  <span>₹{currentPricing.max.toLocaleString()}</span>
+                  <span>₹{formatIndianNumber(currentPricing.min)}</span>
+                  <span>₹{formatIndianNumber(currentPricing.max)}</span>
                 </div>
                 <Slider
                   value={priceRange}
@@ -199,7 +232,7 @@ const PricingCalculator = () => {
                     <div className="text-sm text-blue-700 font-medium">Selected Price</div>
                     <div className="text-xl font-bold text-blue-800 flex items-center justify-center">
                       <IndianRupee className="h-5 w-5 mr-1" />
-                      {parseInt(results.selectedPrice).toLocaleString()}
+                      {formatIndianNumber(parseInt(results.selectedPrice))}
                     </div>
                     <div className="text-xs text-blue-600">{results.unit}</div>
                   </CardContent>
@@ -211,7 +244,7 @@ const PricingCalculator = () => {
                     <div className="text-sm text-green-700 font-medium">Total Cost</div>
                     <div className="text-xl font-bold text-green-800 flex items-center justify-center">
                       <IndianRupee className="h-5 w-5 mr-1" />
-                      {parseInt(results.totalCost).toLocaleString()}
+                      {formatIndianNumber(parseInt(results.totalCost))}
                     </div>
                     <div className="text-xs text-green-600">{results.period}</div>
                   </CardContent>
@@ -223,7 +256,9 @@ const PricingCalculator = () => {
                   <p className="font-semibold">Calculation Details:</p>
                   <p>Total Area: {results.totalAcres} acres ({results.totalGunthas} gunthas)</p>
                   <p>Type: {results.calculationType.charAt(0).toUpperCase() + results.calculationType.slice(1)} {results.period}</p>
-                  <p>Advance/Security: {typeof results.advance === 'string' ? results.advance : `₹${parseInt(results.advance).toLocaleString()}`}</p>
+                  {results.showAdvance && (
+                    <p>Advance/Security: ₹{results.advance}</p>
+                  )}
                 </div>
               </div>
             </div>
