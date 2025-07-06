@@ -143,7 +143,7 @@ const PricingCalculator = () => {
 
     setResults({
       ...calculations,
-      totalAcres: totalAcres.toFixed(2),
+      totalAcres: totalAcres.toFixed(3),
       totalGunthas: (totalAcres * 40).toFixed(0),
       calculationType: calculationType,
       acresInput: acres,
