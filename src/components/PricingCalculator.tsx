@@ -10,7 +10,6 @@ import { Calculator, IndianRupee, TrendingUp, BarChart3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const PricingCalculator = () => {
-  const [landType, setLandType] = useState<string>("");
   const [acres, setAcres] = useState<string>("");
   const [gunthas, setGunthas] = useState<string>("");
   const [calculationType, setCalculationType] = useState<string>("rent");
@@ -18,7 +17,7 @@ const PricingCalculator = () => {
   const [results, setResults] = useState<any>(null);
   const { toast } = useToast();
 
-  // Pricing ranges based on your specifications
+  // Updated pricing ranges as per your specifications
   const pricingRanges = {
     rent: {
       min: 25000,
@@ -29,8 +28,8 @@ const PricingCalculator = () => {
     lease: {
       min: 500000, // ₹5 lakhs
       max: 1000000, // ₹10 lakhs
-      unit: "per acre for 3 years",
-      description: "3-year lease price per acre"
+      unit: "per acre for 5 years",
+      description: "5-year lease price per acre"
     },
     sale: {
       min: 150000, // ₹1.5 lakhs per guntha
@@ -51,10 +50,10 @@ const PricingCalculator = () => {
   };
 
   const calculatePricing = () => {
-    if (!landType || !acres) {
+    if (!acres) {
       toast({
         title: "Missing Information",
-        description: "Please fill in land type and area",
+        description: "Please fill in the area",
         variant: "destructive",
       });
       return;
@@ -80,7 +79,7 @@ const PricingCalculator = () => {
         calculations = {
           selectedPrice: selectedPrice,
           totalCost: (selectedPrice * totalAcres).toFixed(0),
-          period: "for 3 years",
+          period: "for 5 years",
           advance: "Full payment upfront",
           unit: "per acre"
         };
@@ -103,7 +102,6 @@ const PricingCalculator = () => {
       ...calculations,
       totalAcres: totalAcres.toFixed(2),
       totalGunthas: (totalAcres * 40).toFixed(0),
-      landType: landType,
       calculationType: calculationType
     });
   };
@@ -126,25 +124,6 @@ const PricingCalculator = () => {
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <Label htmlFor="landType" className="text-base font-semibold mb-2 block">
-                Land Type *
-              </Label>
-              <Select value={landType} onValueChange={setLandType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select land type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="coconut">Coconut</SelectItem>
-                  <SelectItem value="areca">Areca</SelectItem>
-                  <SelectItem value="paddy">Paddy</SelectItem>
-                  <SelectItem value="vegetable">Vegetable</SelectItem>
-                  <SelectItem value="fruit">Fruit</SelectItem>
-                  <SelectItem value="mixed">Mixed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
               <Label htmlFor="calculationType" className="text-base font-semibold mb-2 block">
                 Calculation Type *
               </Label>
@@ -154,7 +133,7 @@ const PricingCalculator = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="rent">Rental (Annual)</SelectItem>
-                  <SelectItem value="lease">Lease (3 Years)</SelectItem>
+                  <SelectItem value="lease">Lease (5 Years)</SelectItem>
                   <SelectItem value="sale">Sale (Purchase)</SelectItem>
                 </SelectContent>
               </Select>
@@ -258,7 +237,6 @@ const PricingCalculator = () => {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="text-center text-gray-700">
                   <p className="font-semibold">Calculation Details:</p>
-                  <p>Land Type: {results.landType.charAt(0).toUpperCase() + results.landType.slice(1)}</p>
                   <p>Total Area: {results.totalAcres} acres ({results.totalGunthas} gunthas)</p>
                   <p>Type: {results.calculationType.charAt(0).toUpperCase() + results.calculationType.slice(1)} {results.period}</p>
                   <p>Advance/Security: {typeof results.advance === 'string' ? results.advance : `₹${parseInt(results.advance).toLocaleString()}`}</p>
