@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 
 const PricingCalculator = () => {
   const [acres, setAcres] = useState<string>("");
-  const [gunthas, setGunthas] = useState<string>("");
   const [calculationType, setCalculationType] = useState<string>("rent");
   const [priceRange, setPriceRange] = useState<number[]>([25000]);
   const [results, setResults] = useState<any>(null);
@@ -59,7 +58,7 @@ const PricingCalculator = () => {
       return;
     }
 
-    const totalAcres = parseFloat(acres) + (parseFloat(gunthas || "0") / 40);
+    const totalAcres = parseFloat(acres);
     const selectedPrice = priceRange[0];
     const pricing = getCurrentPricing();
 
@@ -151,21 +150,6 @@ const PricingCalculator = () => {
                 placeholder="Enter acres"
                 min="0"
                 step="0.1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="gunthas" className="text-base font-semibold mb-2 block">
-                Gunthas (Optional)
-              </Label>
-              <Input
-                id="gunthas"
-                type="number"
-                value={gunthas}
-                onChange={(e) => setGunthas(e.target.value)}
-                placeholder="Enter gunthas (1 acre = 40 gunthas)"
-                min="0"
-                max="39"
               />
             </div>
 
