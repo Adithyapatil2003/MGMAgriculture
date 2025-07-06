@@ -53,6 +53,11 @@ const PricingCalculator = () => {
     return num.toString();
   };
 
+  // Format number with commas for digit display
+  const formatWithCommas = (num: number): string => {
+    return num.toLocaleString('en-IN');
+  };
+
   const getCurrentPricing = () => {
     return pricingRanges[calculationType as keyof typeof pricingRanges];
   };
@@ -63,11 +68,32 @@ const PricingCalculator = () => {
     setPriceRange([pricing.min]);
   };
 
+  const handleAcresChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow whole numbers for acres
+    if (value === "" || /^\d+$/.test(value)) {
+      setAcres(value);
+    }
+  };
+
+  const handleGunthasChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === "" || (/^\d+$/.test(value) && parseInt(value) <= 40)) {
+      setGunthas(value);
+    } else if (parseInt(value) > 40) {
+      toast({
+        title: "Invalid Input",
+        description: "Gunthas cannot exceed 40 (1 acre = 40 gunthas)",
+        variant: "destructive",
+      });
+    }
+  };
+
   const calculatePricing = () => {
     if (!acres) {
       toast({
         title: "Missing Information",
-        description: "Please fill in the area",
+        description: "Please fill in the number of acres",
         variant: "destructive",
       });
       return;
@@ -119,7 +145,9 @@ const PricingCalculator = () => {
       ...calculations,
       totalAcres: totalAcres.toFixed(2),
       totalGunthas: (totalAcres * 40).toFixed(0),
-      calculationType: calculationType
+      calculationType: calculationType,
+      acresInput: acres,
+      gunthasInput: gunthas || "0"
     });
   };
 
@@ -162,38 +190,37 @@ const PricingCalculator = () => {
               </Label>
               <Input
                 id="acres"
-                type="number"
+                type="text"
                 value={acres}
-                onChange={(e) => setAcres(e.target.value)}
-                placeholder="Enter acres"
+                onChange={handleAcresChange}
+                placeholder="Enter acres (whole numbers only)"
                 min="0"
-                step="0.1"
               />
             </div>
 
             <div>
               <Label htmlFor="gunthas" className="text-base font-semibold mb-2 block">
-                Gunthas
+                Gunthas (max 40)
               </Label>
               <Input
                 id="gunthas"
-                type="number"
+                type="text"
                 value={gunthas}
-                onChange={(e) => setGunthas(e.target.value)}
-                placeholder="Enter gunthas (1 acre = 40 gunthas)"
+                onChange={handleGunthasChange}
+                placeholder="Enter gunthas (0-40)"
                 min="0"
-                max="39"
+                max="40"
               />
             </div>
 
             <div className="md:col-span-3">
               <Label className="text-base font-semibold mb-4 block">
-                Price Range: ₹{formatIndianNumber(priceRange[0])} {currentPricing.unit}
+                Price Range: ₹{formatWithCommas(priceRange[0])} {currentPricing.unit}
               </Label>
               <div className="px-4 py-2 bg-gray-50 rounded-lg mb-4">
                 <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>₹{formatIndianNumber(currentPricing.min)}</span>
-                  <span>₹{formatIndianNumber(currentPricing.max)}</span>
+                  <span>₹{formatWithCommas(currentPricing.min)}</span>
+                  <span>₹{formatWithCommas(currentPricing.max)}</span>
                 </div>
                 <Slider
                   value={priceRange}
@@ -232,7 +259,7 @@ const PricingCalculator = () => {
                     <div className="text-sm text-blue-700 font-medium">Selected Price</div>
                     <div className="text-xl font-bold text-blue-800 flex items-center justify-center">
                       <IndianRupee className="h-5 w-5 mr-1" />
-                      {formatIndianNumber(parseInt(results.selectedPrice))}
+                      {formatWithCommas(parseInt(results.selectedPrice))}
                     </div>
                     <div className="text-xs text-blue-600">{results.unit}</div>
                   </CardContent>
@@ -244,7 +271,7 @@ const PricingCalculator = () => {
                     <div className="text-sm text-green-700 font-medium">Total Cost</div>
                     <div className="text-xl font-bold text-green-800 flex items-center justify-center">
                       <IndianRupee className="h-5 w-5 mr-1" />
-                      {formatIndianNumber(parseInt(results.totalCost))}
+                      {formatWithCommas(parseInt(results.totalCost))}
                     </div>
                     <div className="text-xs text-green-600">{results.period}</div>
                   </CardContent>
@@ -254,7 +281,7 @@ const PricingCalculator = () => {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="text-center text-gray-700">
                   <p className="font-semibold">Calculation Details:</p>
-                  <p>Total Area: {results.totalAcres} acres ({results.totalGunthas} gunthas)</p>
+                  <p>Total Area: {results.acresInput} acres {results.gunthasInput} gunthas = {results.totalAcres} acres ({results.totalGunthas} gunthas)</p>
                   <p>Type: {results.calculationType.charAt(0).toUpperCase() + results.calculationType.slice(1)} {results.period}</p>
                   {results.showAdvance && (
                     <p>Advance/Security: ₹{results.advance}</p>
