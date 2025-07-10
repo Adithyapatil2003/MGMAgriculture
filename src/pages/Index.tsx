@@ -119,26 +119,12 @@ const Index = () => {
     }
   ];
 
-  const owners = [
-    { 
-      name: "Mohan M G", 
-      phones: ["9448018544", "8073984709"], 
-      email: "mg_mohan2003@yahoo.co.in",
-      whatsapp: "9448018544"
-    },
-    { 
-      name: "Nandini H J", 
-      phones: ["9480708440"], 
-      email: "nandinimhj@gmail.com",
-      whatsapp: "9480708440"
-    },
-    { 
-      name: "M Deepak", 
-      phones: ["9845326568"], 
-      email: "mm.deepak2003@gmail.com",
-      whatsapp: "9845326568"
-    }
-  ];
+  const owner = { 
+    name: "Mohan M G", 
+    phones: ["9448018544", "8073984709"], 
+    email: "mg_mohan2003@yahoo.co.in",
+    whatsapp: "9448018544"
+  };
 
   const downloadImage = async (imageUrl: string, filename: string) => {
     try {
@@ -233,7 +219,7 @@ const Index = () => {
               className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               <Phone className="mr-2 h-5 w-5" />
-              Contact Owners
+              Contact Owner
             </Button>
             <Button 
               onClick={scrollToPricing}
@@ -499,71 +485,69 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Contact <span className="text-green-200">Our Owners</span>
+              Contact <span className="text-green-200">Our Owner</span>
             </h2>
             <p className="text-xl text-green-100 mb-8 leading-relaxed">
-              Reach out to our property owners for detailed information, site visits, and pricing negotiations.
+              Reach out to our property owner for detailed information, site visits, and pricing negotiations.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {owners.map((owner, index) => (
-              <Card key={index} className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Phone className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-4">{owner.name}</h3>
-                  <div className="space-y-2">
-                    {owner.phones.map((phone, phoneIndex) => (
-                      <a
-                        key={phoneIndex}
-                        href={`tel:${phone}`}
-                        className="block"
+          <div className="flex justify-center mb-12">
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300 max-w-md">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Phone className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold mb-4">{owner.name}</h3>
+                <div className="space-y-2">
+                  {owner.phones.map((phone, phoneIndex) => (
+                    <a
+                      key={phoneIndex}
+                      href={`tel:${phone}`}
+                      className="block"
+                    >
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold"
                       >
-                        <Button 
-                          variant="outline" 
-                          className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold"
-                        >
-                          <Phone className="mr-2 h-4 w-4" />
-                          {phone}
-                        </Button>
-                      </a>
-                    ))}
-                    {owner.whatsapp && (
-                      <a
-                        href={`https://wa.me/91${owner.whatsapp}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block"
+                        <Phone className="mr-2 h-4 w-4" />
+                        {phone}
+                      </Button>
+                    </a>
+                  ))}
+                  {owner.whatsapp && (
+                    <a
+                      href={`https://wa.me/91${owner.whatsapp}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-green-500/20 border-green-400/40 text-white hover:bg-green-400 hover:text-green-900 font-semibold"
                       >
-                        <Button 
-                          variant="outline" 
-                          className="w-full bg-green-500/20 border-green-400/40 text-white hover:bg-green-400 hover:text-green-900 font-semibold"
-                        >
-                          <MessageCircle className="mr-2 h-4 w-4" />
-                          WhatsApp
-                        </Button>
-                      </a>
-                    )}
-                    {owner.email && (
-                      <a
-                        href={`mailto:${owner.email}`}
-                        className="block"
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        WhatsApp
+                      </Button>
+                    </a>
+                  )}
+                  {owner.email && (
+                    <a
+                      href={`mailto:${owner.email}`}
+                      className="block"
+                    >
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold text-sm"
                       >
-                        <Button 
-                          variant="outline" 
-                          className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold text-sm"
-                        >
-                          <Mail className="mr-2 h-4 w-4" />
-                          {owner.email}
-                        </Button>
-                      </a>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                        <Mail className="mr-2 h-4 w-4" />
+                        {owner.email}
+                      </Button>
+                    </a>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="text-center">
