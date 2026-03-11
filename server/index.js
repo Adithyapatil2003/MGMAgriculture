@@ -3,7 +3,7 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 const mysql = require("mysql2/promise");
-require("dotenv").config();
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const authRoutes = require("./routes/auth");
 const imageRoutes = require("./routes/images");
@@ -145,11 +145,20 @@ async function seedExistingImages() {
 async function startServer() {
   const database = await initDatabase();
 
-  // Routes
+  // API Routes
   app.use("/api/auth", authRoutes);
   app.use("/api/images", imageRoutes(database));
 
-  app.listen(PORT, () => {
+  // Serve static frontend files (React build)
+  const distPath = path.join(__dirname, "..", "dist");
+  app.use(express.static(distPath));
+
+  // SPA catch-all: serve index.html for any non-API routes
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(distPath, "index.html"));
+  });
+
+  app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
   });
 }
