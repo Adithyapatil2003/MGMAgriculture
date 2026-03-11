@@ -1,89 +1,171 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Mail, Droplets, TreePine, Wheat, Palmtree, IndianRupee, Download, MessageCircle } from "lucide-react";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Droplets,
+  TreePine,
+  Wheat,
+  Palmtree,
+  IndianRupee,
+  Download,
+  MessageCircle,
+} from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import PricingCalculator from "@/components/PricingCalculator";
 import InquiryForm from "@/components/InquiryForm";
 
+// Hardcoded fallback images
+const fallbackImages = [
+  "/lovable-uploads/c23fb84a-1c4d-424e-9be9-f611df8af529.png",
+  "/lovable-uploads/58897bf2-e2c7-42b6-883f-beb2ad1624ba.png",
+  "/lovable-uploads/5b735977-0b2c-407d-967f-d881823d2ec8.png",
+  "/lovable-uploads/bea40f84-a004-4f23-b8fe-2e63b689f86b.png",
+  "/lovable-uploads/179067ab-025a-438a-90ce-90fcac031901.png",
+  "/lovable-uploads/4fb39deb-9615-495c-8be9-3430beb07cd6.png",
+  "/lovable-uploads/135d6072-056c-4ac2-9628-7d20aba50163.png",
+  "/lovable-uploads/01780aa3-ff69-4dac-9e6e-dd253d419e2c.png",
+  "/lovable-uploads/596771fc-9a47-4aaa-b7c1-fa8e031fe6a2.png",
+  "/lovable-uploads/d6e9ece8-5c25-43ed-b7ee-ec17593859b4.png",
+  "/lovable-uploads/ece37575-ccee-478c-8cba-8db9e133eda4.png",
+  "/lovable-uploads/bf1f0143-e143-40d0-a44e-a4a62c2dd600.png",
+  "/lovable-uploads/0b09419d-486e-498b-8051-e600b4a1f8db.png",
+  "/lovable-uploads/bf6693e2-e238-4fae-886b-74a3e6125ecd.png",
+  "/lovable-uploads/5c598329-e359-4cec-a690-5aca03c3d116.png",
+  "/lovable-uploads/1561e55f-e833-40cd-8e50-22bd67ddac90.png",
+  "/lovable-uploads/ea0be2bd-f74d-4e29-820a-9d7ba784c03a.png",
+  "/lovable-uploads/6df4ace9-c7b4-479a-ae0a-3163caa589b0.png",
+  "/lovable-uploads/263818a0-abf1-4142-9702-bd6283783b37.png",
+  "/lovable-uploads/3231cf4b-e544-4c17-a7c0-c7fe0d9975ae.png",
+  "/lovable-uploads/383bd408-e4a2-4387-84ad-2f48464d4a60.png",
+  "/lovable-uploads/7cc8736c-7a77-4093-8aeb-18b5536cb9e5.png",
+  "/lovable-uploads/7af551e0-637a-41cb-a322-992c62c0c03d.png",
+  "/lovable-uploads/e0ab70b9-5b12-48d5-b737-1656075cbf3b.png",
+  "/lovable-uploads/1b67c9a8-c6fe-4902-b3ba-8fa4075e48e0.png",
+  "/lovable-uploads/fd7cae1c-a932-46ca-8a69-0b84676cb7de.png",
+  "/lovable-uploads/96fd422a-dcb9-4dc7-921e-8b90418ae545.png",
+  "/lovable-uploads/b6686886-a8bc-437b-a614-d719dda7b250.png",
+  "/lovable-uploads/661f9528-c3c5-4d1d-8bd6-226cd8f6317f.png",
+  "/lovable-uploads/a5acc6da-2dc4-4dd7-b53e-94cbabddc9dc.png",
+  "/lovable-uploads/3a6dc2d7-3e73-41af-a601-b868e037d728.png",
+  "/lovable-uploads/1ed3ce05-3e41-4a5f-b230-fd53d6e59394.png",
+  "/lovable-uploads/4bd4ac96-1c1f-4b28-a8a7-d11b534b285c.png",
+  "/lovable-uploads/8b06a3dc-e1cd-4fee-ad49-bb27f8bce500.png",
+  "/lovable-uploads/76cc52fd-448a-406a-9baa-978084443292.png",
+  "/lovable-uploads/d4074998-23e4-43a0-bf9b-6092cfe2ab93.png",
+  "/lovable-uploads/ec258172-1a94-4364-b12b-96c84dd82762.png",
+];
+
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState(0);
+  const [propertyImages, setPropertyImages] = useState<string[]>([]);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const pricingSectionRef = useRef<HTMLElement>(null);
   const contactSectionRef = useRef<HTMLElement>(null);
   const { toast } = useToast();
 
-  const propertyImages = [
-    "/lovable-uploads/c23fb84a-1c4d-424e-9be9-f611df8af529.png",
-    "/lovable-uploads/58897bf2-e2c7-42b6-883f-beb2ad1624ba.png",
-    "/lovable-uploads/5b735977-0b2c-407d-967f-d881823d2ec8.png",
-    "/lovable-uploads/bea40f84-a004-4f23-b8fe-2e63b689f86b.png",
-    "/lovable-uploads/179067ab-025a-438a-90ce-90fcac031901.png",
-    "/lovable-uploads/4fb39deb-9615-495c-8be9-3430beb07cd6.png",
-    "/lovable-uploads/135d6072-056c-4ac2-9628-7d20aba50163.png",
-    "/lovable-uploads/01780aa3-ff69-4dac-9e6e-dd253d419e2c.png",
-    "/lovable-uploads/596771fc-9a47-4aaa-b7c1-fa8e031fe6a2.png",
-    "/lovable-uploads/d6e9ece8-5c25-43ed-b7ee-ec17593859b4.png",
-    "/lovable-uploads/ece37575-ccee-478c-8cba-8db9e133eda4.png",
-    "/lovable-uploads/bf1f0143-e143-40d0-a44e-a4a62c2dd600.png",
-    "/lovable-uploads/0b09419d-486e-498b-8051-e600b4a1f8db.png",
-    "/lovable-uploads/bf6693e2-e238-4fae-886b-74a3e6125ecd.png",
-    "/lovable-uploads/5c598329-e359-4cec-a690-5aca03c3d116.png",
-    "/lovable-uploads/1561e55f-e833-40cd-8e50-22bd67ddac90.png",
-    "/lovable-uploads/ea0be2bd-f74d-4e29-820a-9d7ba784c03a.png",
-    "/lovable-uploads/6df4ace9-c7b4-479a-ae0a-3163caa589b0.png",
-    "/lovable-uploads/263818a0-abf1-4142-9702-bd6283783b37.png",
-    "/lovable-uploads/3231cf4b-e544-4c17-a7c0-c7fe0d9975ae.png",
-    "/lovable-uploads/383bd408-e4a2-4387-84ad-2f48464d4a60.png",
-    "/lovable-uploads/7cc8736c-7a77-4093-8aeb-18b5536cb9e5.png",
-    "/lovable-uploads/7af551e0-637a-41cb-a322-992c62c0c03d.png",
-    "/lovable-uploads/e0ab70b9-5b12-48d5-b737-1656075cbf3b.png",
-    "/lovable-uploads/1b67c9a8-c6fe-4902-b3ba-8fa4075e48e0.png",
-    "/lovable-uploads/fd7cae1c-a932-46ca-8a69-0b84676cb7de.png",
-    "/lovable-uploads/96fd422a-dcb9-4dc7-921e-8b90418ae545.png",
-    "/lovable-uploads/b6686886-a8bc-437b-a614-d719dda7b250.png",
-    "/lovable-uploads/661f9528-c3c5-4d1d-8bd6-226cd8f6317f.png",
-    "/lovable-uploads/a5acc6da-2dc4-4dd7-b53e-94cbabddc9dc.png",
-    "/lovable-uploads/3a6dc2d7-3e73-41af-a601-b868e037d728.png",
-    "/lovable-uploads/1ed3ce05-3e41-4a5f-b230-fd53d6e59394.png",
-    "/lovable-uploads/4bd4ac96-1c1f-4b28-a8a7-d11b534b285c.png",
-    "/lovable-uploads/8b06a3dc-e1cd-4fee-ad49-bb27f8bce500.png",
-    "/lovable-uploads/76cc52fd-448a-406a-9baa-978084443292.png",
-    "/lovable-uploads/d4074998-23e4-43a0-bf9b-6092cfe2ab93.png",
-    "/lovable-uploads/ec258172-1a94-4364-b12b-96c84dd82762.png"
-  ];
+  // Fetch images from API with fallback
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await fetch("/api/images");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.length > 0) {
+            setPropertyImages(
+              data.map((img: { file_path: string }) => img.file_path)
+            );
+          } else {
+            setPropertyImages(fallbackImages);
+          }
+        } else {
+          setPropertyImages(fallbackImages);
+        }
+      } catch {
+        setPropertyImages(fallbackImages);
+      } finally {
+        setImagesLoaded(true);
+      }
+    };
+    fetchImages();
+  }, []);
 
   const plotDetails = [
-    { plot: "Plot 1", area: "6 acres 12 Gunthas", type: "Coconut Farm", description: "Large coconut plantation with mature trees" },
-    { plot: "Plot 2", area: "1 acre 26 Gunthas", type: "Paddy Field", description: "Fertile paddy cultivation area" },
-    { plot: "Plot 3", area: "1 acre 3 Gunthas", type: "Coconut Farm", description: "Compact coconut grove" },
-    { plot: "Plot 4", area: "4 acres", type: "Coconut Farm", description: "Extensive coconut plantation" },
-    { plot: "Plot 5", area: "2 acres 10 Gunthas", type: "Coconut Farm", description: "Medium-sized coconut farm" },
-    { plot: "Plot 6", area: "2 acres 2.5 Gunthas", type: "Teak Plantation", description: "Premium teak tree plantation" },
-    { plot: "Plot 7", area: "2 acres", type: "Coconut Farm", description: "Well-maintained coconut grove" }
+    {
+      plot: "Plot 1",
+      area: "6 acres 12 Gunthas",
+      type: "Coconut Farm",
+      description: "Large coconut plantation with mature trees",
+    },
+    {
+      plot: "Plot 2",
+      area: "1 acre 26 Gunthas",
+      type: "Paddy Field",
+      description: "Fertile paddy cultivation area",
+    },
+    {
+      plot: "Plot 3",
+      area: "1 acre 3 Gunthas",
+      type: "Coconut Farm",
+      description: "Compact coconut grove",
+    },
+    {
+      plot: "Plot 4",
+      area: "4 acres",
+      type: "Coconut Farm",
+      description: "Extensive coconut plantation",
+    },
+    {
+      plot: "Plot 5",
+      area: "2 acres 10 Gunthas",
+      type: "Coconut Farm",
+      description: "Medium-sized coconut farm",
+    },
+    {
+      plot: "Plot 6",
+      area: "2 acres 2.5 Gunthas",
+      type: "Teak Plantation",
+      description: "Premium teak tree plantation",
+    },
+    {
+      plot: "Plot 7",
+      area: "2 acres",
+      type: "Coconut Farm",
+      description: "Well-maintained coconut grove",
+    },
   ];
 
   const features = [
     {
       icon: <Palmtree className="h-6 w-6 text-green-600" />,
       title: "Premium Coconuts",
-      description: "Tall, oil-rich coconut trees producing nutrient-rich tender coconuts"
+      description:
+        "Tall, oil-rich coconut trees producing nutrient-rich tender coconuts",
     },
     {
       icon: <TreePine className="h-6 w-6 text-amber-600" />,
       title: "Teak Plantation",
-      description: "Valuable teak trees for premium timber production"
+      description: "Valuable teak trees for premium timber production",
     },
     {
       icon: <Wheat className="h-6 w-6 text-green-700" />,
       title: "Paddy Fields",
-      description: "Fertile paddy cultivation area for rice production"
+      description: "Fertile paddy cultivation area for rice production",
     },
     {
       icon: <Droplets className="h-6 w-6 text-blue-600" />,
       title: "Water Access",
-      description: "Natural water source with irrigation capabilities"
-    }
+      description: "Natural water source with irrigation capabilities",
+    },
   ];
 
   const specifications = [
@@ -92,7 +174,7 @@ const Index = () => {
     { label: "Paddy Field", value: "1 Plot (1.65 Acres)" },
     { label: "Teak Plantation", value: "1 Plot (2+ Acres)" },
     { label: "Coconut Quality", value: "Oil-rich, Tender" },
-    { label: "Tree Height", value: "Tall, Mature Trees" }
+    { label: "Tree Height", value: "Tall, Mature Trees" },
   ];
 
   const pricingOptions = [
@@ -101,29 +183,29 @@ const Index = () => {
       price: "₹25,000-50,000",
       period: "per acre/year",
       advance: "₹1 lakh advance/security deposit",
-      description: "Annual rental with 1-year advance payment"
+      description: "Annual rental with 1-year advance payment",
     },
     {
       type: "Lease",
       price: "₹10 lakhs",
       period: "per acre for 5 years",
       advance: "Long-term commitment",
-      description: "5-year lease agreement with full payment"
+      description: "5-year lease agreement with full payment",
     },
     {
       type: "Sale",
       price: "₹1.5-2.5 lakhs",
       period: "per guntha",
       advance: "Full ownership",
-      description: "Complete ownership with clear title"
-    }
+      description: "Complete ownership with clear title",
+    },
   ];
 
-  const owner = { 
-    name: "Mohan M G", 
-    phones: ["9448018544", "8073984709"], 
+  const owner = {
+    name: "Mohan M G",
+    phones: ["9448018544", "8073984709"],
     email: "mg_mohan2003@yahoo.co.in",
-    whatsapp: "9448018544"
+    whatsapp: "9448018544",
   };
 
   const downloadImage = async (imageUrl: string, filename: string) => {
@@ -131,7 +213,7 @@ const Index = () => {
       const response = await fetch(imageUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
       link.download = filename;
       document.body.appendChild(link);
@@ -139,28 +221,28 @@ const Index = () => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Error downloading image:', error);
+      console.error("Error downloading image:", error);
     }
   };
 
   const downloadAllImages = async () => {
     for (let i = 0; i < propertyImages.length; i++) {
       await downloadImage(propertyImages[i], `property-image-${i + 1}.png`);
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
   };
 
   const scrollToPricing = () => {
-    pricingSectionRef.current?.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'start'
+    pricingSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
     });
   };
 
   const scrollToContact = () => {
-    contactSectionRef.current?.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'start'
+    contactSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
     });
   };
 
@@ -175,15 +257,15 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50">
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out"
-          style={{ 
+          style={{
             backgroundImage: `url(${propertyImages[selectedImage]})`,
-            filter: 'brightness(0.7)'
+            filter: "brightness(0.7)",
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/60" />
-        
+
         <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
           <div className="flex flex-wrap justify-center gap-3 mb-4">
             <button onClick={scrollToPricing}>
@@ -207,23 +289,25 @@ const Index = () => {
             <span className="block text-green-400">Agricultural Lands</span>
           </h1>
           <p className="text-xl md:text-2xl mb-4 text-gray-200 leading-relaxed">
-            19 acres across 7 plots featuring coconut farms, paddy fields, and teak plantation
+            19 acres across 7 plots featuring coconut farms, paddy fields, and
+            teak plantation
           </p>
           <p className="text-lg mb-8 text-green-200 leading-relaxed">
-            MUGTIHALLY & KAIDALA Villages, Nonavinakere, Tiptur Taluk, Tumkur District, Karnataka
+            MUGTIHALLY & KAIDALA Villages, Nonavinakere, Tiptur Taluk, Tumkur
+            District, Karnataka
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
+            <Button
               onClick={scrollToContact}
-              size="lg" 
+              size="lg"
               className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               <Phone className="mr-2 h-5 w-5" />
               Contact Owner
             </Button>
-            <Button 
+            <Button
               onClick={scrollToPricing}
-              variant="outline" 
+              variant="outline"
               size="lg"
               className="border-white text-white bg-white/20 px-8 py-4 text-lg font-semibold rounded-full shadow-lg"
             >
@@ -238,7 +322,9 @@ const Index = () => {
               key={index}
               onClick={() => setSelectedImage(index)}
               className={`w-3 h-3 rounded-full transition-all duration-500 ease-in-out ${
-                selectedImage === index ? 'bg-white scale-125 shadow-lg' : 'bg-white/50 hover:bg-white/75 hover:scale-110'
+                selectedImage === index
+                  ? "bg-white scale-125 shadow-lg"
+                  : "bg-white/50 hover:bg-white/75 hover:scale-110"
               }`}
             />
           ))}
@@ -254,10 +340,11 @@ const Index = () => {
               Calculate <span className="text-green-600">Your Investment</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Use our calculator to estimate costs for renting, leasing, or purchasing agricultural land.
+              Use our calculator to estimate costs for renting, leasing, or
+              purchasing agricultural land.
             </p>
           </div>
-          
+
           <PricingCalculator />
         </div>
       </section>
@@ -269,19 +356,27 @@ const Index = () => {
               Pricing <span className="text-green-600">Options</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Flexible pricing options to suit your investment needs - rent, lease, or purchase.
+              Flexible pricing options to suit your investment needs - rent,
+              lease, or purchase.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {pricingOptions.map((option, index) => (
-              <Card key={index} className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg">
+              <Card
+                key={index}
+                className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg"
+              >
                 <CardHeader className="pb-4 text-center">
-                  <Badge className={`mx-auto mb-4 ${
-                    option.type === 'Rent' ? 'bg-blue-100 text-blue-800' :
-                    option.type === 'Lease' ? 'bg-purple-100 text-purple-800' :
-                    'bg-green-100 text-green-800'
-                  }`}>
+                  <Badge
+                    className={`mx-auto mb-4 ${
+                      option.type === "Rent"
+                        ? "bg-blue-100 text-blue-800"
+                        : option.type === "Lease"
+                        ? "bg-purple-100 text-purple-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
                     {option.type}
                   </Badge>
                   <CardTitle className="text-2xl font-bold text-gray-800 flex items-center justify-center">
@@ -292,7 +387,9 @@ const Index = () => {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                    <div className="font-semibold text-gray-800">{option.advance}</div>
+                    <div className="font-semibold text-gray-800">
+                      {option.advance}
+                    </div>
                   </div>
                   <CardDescription className="text-gray-600 text-base">
                     {option.description}
@@ -311,25 +408,37 @@ const Index = () => {
               Land <span className="text-green-600">Distribution</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Our 19-acre property is strategically divided into 7 distinct plots, each optimized for different agricultural purposes.
+              Our 19-acre property is strategically divided into 7 distinct
+              plots, each optimized for different agricultural purposes.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {plotDetails.map((plot, index) => (
-              <Card key={index} className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg">
+              <Card
+                key={index}
+                className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg"
+              >
                 <CardHeader className="pb-4">
                   <div className="flex justify-between items-start mb-2">
-                    <CardTitle className="text-lg font-bold text-gray-800">{plot.plot}</CardTitle>
-                    <Badge className={`${
-                      plot.type === 'Coconut Farm' ? 'bg-green-100 text-green-800' :
-                      plot.type === 'Paddy Field' ? 'bg-blue-100 text-blue-800' :
-                      'bg-amber-100 text-amber-800'
-                    }`}>
+                    <CardTitle className="text-lg font-bold text-gray-800">
+                      {plot.plot}
+                    </CardTitle>
+                    <Badge
+                      className={`${
+                        plot.type === "Coconut Farm"
+                          ? "bg-green-100 text-green-800"
+                          : plot.type === "Paddy Field"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-amber-100 text-amber-800"
+                      }`}
+                    >
                       {plot.type}
                     </Badge>
                   </div>
-                  <div className="text-2xl font-bold text-green-600 mb-2">{plot.area}</div>
+                  <div className="text-2xl font-bold text-green-600 mb-2">
+                    {plot.area}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-gray-600 text-base">
@@ -349,10 +458,11 @@ const Index = () => {
               Property <span className="text-green-600">Gallery</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
-              Explore detailed images of this exceptional multi-plot agricultural property.
+              Explore detailed images of this exceptional multi-plot
+              agricultural property.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button 
+              <Button
                 onClick={downloadAllImages}
                 className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
               >
@@ -365,13 +475,18 @@ const Index = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-4">
               <div className="relative h-80 rounded-2xl overflow-hidden shadow-xl group">
-                <img 
-                  src={propertyImages[selectedImage]} 
+                <img
+                  src={propertyImages[selectedImage]}
                   alt="Property view"
                   className="w-full h-full object-cover transition-all duration-700 ease-in-out hover:scale-110"
                 />
                 <button
-                  onClick={() => downloadImage(propertyImages[selectedImage], `property-image-${selectedImage + 1}.png`)}
+                  onClick={() =>
+                    downloadImage(
+                      propertyImages[selectedImage],
+                      `property-image-${selectedImage + 1}.png`
+                    )
+                  }
                   className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"
                 >
                   <Download className="h-4 w-4" />
@@ -383,11 +498,13 @@ const Index = () => {
                     key={index}
                     onClick={() => setSelectedImage(index)}
                     className={`relative h-20 rounded-lg overflow-hidden shadow-md transition-all duration-500 ease-in-out ${
-                      selectedImage === index ? 'ring-4 ring-green-500 scale-105 shadow-xl' : 'hover:scale-105 hover:shadow-lg hover:ring-2 hover:ring-green-300'
+                      selectedImage === index
+                        ? "ring-4 ring-green-500 scale-105 shadow-xl"
+                        : "hover:scale-105 hover:shadow-lg hover:ring-2 hover:ring-green-300"
                     }`}
                   >
-                    <img 
-                      src={image} 
+                    <img
+                      src={image}
                       alt={`Property view ${index + 1}`}
                       className="w-full h-full object-cover transition-transform duration-300"
                     />
@@ -401,11 +518,13 @@ const Index = () => {
                       key={index + 4}
                       onClick={() => setSelectedImage(index + 4)}
                       className={`relative h-20 rounded-lg overflow-hidden shadow-md transition-all duration-500 ease-in-out ${
-                        selectedImage === index + 4 ? 'ring-4 ring-green-500 scale-105 shadow-xl' : 'hover:scale-105 hover:shadow-lg hover:ring-2 hover:ring-green-300'
+                        selectedImage === index + 4
+                          ? "ring-4 ring-green-500 scale-105 shadow-xl"
+                          : "hover:scale-105 hover:shadow-lg hover:ring-2 hover:ring-green-300"
                       }`}
                     >
-                      <img 
-                        src={image} 
+                      <img
+                        src={image}
                         alt={`Property view ${index + 5}`}
                         className="w-full h-full object-cover transition-transform duration-300"
                       />
@@ -417,19 +536,30 @@ const Index = () => {
 
             <div className="space-y-8">
               <div>
-                <h3 className="text-3xl font-bold text-gray-800 mb-6">Land Specifications</h3>
+                <h3 className="text-3xl font-bold text-gray-800 mb-6">
+                  Land Specifications
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {specifications.map((spec, index) => (
-                    <div key={index} className="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
-                      <div className="text-sm text-gray-500 uppercase tracking-wider">{spec.label}</div>
-                      <div className="text-lg font-semibold text-gray-800">{spec.value}</div>
+                    <div
+                      key={index}
+                      className="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
+                    >
+                      <div className="text-sm text-gray-500 uppercase tracking-wider">
+                        {spec.label}
+                      </div>
+                      <div className="text-lg font-semibold text-gray-800">
+                        {spec.value}
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="bg-gradient-to-r from-green-600 to-green-700 p-8 rounded-2xl text-white shadow-xl">
-                <h4 className="text-2xl font-bold mb-4">Coconut Farm Highlights</h4>
+                <h4 className="text-2xl font-bold mb-4">
+                  Coconut Farm Highlights
+                </h4>
                 <ul className="space-y-3">
                   <li className="flex items-center">
                     <Palmtree className="h-5 w-5 mr-3 text-green-200" />
@@ -463,12 +593,17 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg bg-gradient-to-b from-white to-gray-50">
+              <Card
+                key={index}
+                className="text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg bg-gradient-to-b from-white to-gray-50"
+              >
                 <CardHeader className="pb-4">
                   <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center mb-4 shadow-md">
                     {feature.icon}
                   </div>
-                  <CardTitle className="text-xl font-bold text-gray-800">{feature.title}</CardTitle>
+                  <CardTitle className="text-xl font-bold text-gray-800">
+                    {feature.title}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-gray-600 text-base leading-relaxed">
@@ -481,17 +616,21 @@ const Index = () => {
         </div>
       </section>
 
-      <section ref={contactSectionRef} className="py-20 bg-gradient-to-r from-green-600 to-green-800">
+      <section
+        ref={contactSectionRef}
+        className="py-20 bg-gradient-to-r from-green-600 to-green-800"
+      >
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Contact <span className="text-green-200">Our Owner</span>
             </h2>
             <p className="text-xl text-green-100 mb-8 leading-relaxed">
-              Reach out to our property owner for detailed information, site visits, and pricing negotiations.
+              Reach out to our property owner for detailed information, site
+              visits, and pricing negotiations.
             </p>
           </div>
-          
+
           <div className="flex justify-center mb-12">
             <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 transition-all duration-300 max-w-md">
               <CardContent className="p-6 text-center">
@@ -501,13 +640,9 @@ const Index = () => {
                 <h3 className="text-xl font-bold mb-4">{owner.name}</h3>
                 <div className="space-y-2">
                   {owner.phones.map((phone, phoneIndex) => (
-                    <a
-                      key={phoneIndex}
-                      href={`tel:${phone}`}
-                      className="block"
-                    >
-                      <Button 
-                        variant="outline" 
+                    <a key={phoneIndex} href={`tel:${phone}`} className="block">
+                      <Button
+                        variant="outline"
                         className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold"
                       >
                         <Phone className="mr-2 h-4 w-4" />
@@ -522,8 +657,8 @@ const Index = () => {
                       rel="noopener noreferrer"
                       className="block"
                     >
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full bg-green-500/20 border-green-400/40 text-white hover:bg-green-400 hover:text-green-900 font-semibold"
                       >
                         <MessageCircle className="mr-2 h-4 w-4" />
@@ -532,12 +667,9 @@ const Index = () => {
                     </a>
                   )}
                   {owner.email && (
-                    <a
-                      href={`mailto:${owner.email}`}
-                      className="block"
-                    >
-                      <Button 
-                        variant="outline" 
+                    <a href={`mailto:${owner.email}`} className="block">
+                      <Button
+                        variant="outline"
                         className="w-full bg-white/20 border-white/40 text-white hover:bg-white hover:text-green-800 font-semibold text-sm"
                       >
                         <Mail className="mr-2 h-4 w-4" />
@@ -555,8 +687,12 @@ const Index = () => {
               <CardContent className="p-8 text-center">
                 <MapPin className="h-12 w-12 mx-auto mb-4 text-green-200" />
                 <h3 className="text-2xl font-bold mb-4">Property Location</h3>
-                <p className="text-green-100 mb-2 text-lg">MUGTIHALLY & KAIDALA Villages</p>
-                <p className="text-green-100 mb-4">Nonavinakere, Tiptur Taluk, Tumkur District</p>
+                <p className="text-green-100 mb-2 text-lg">
+                  MUGTIHALLY & KAIDALA Villages
+                </p>
+                <p className="text-green-100 mb-4">
+                  Nonavinakere, Tiptur Taluk, Tumkur District
+                </p>
                 <p className="text-green-100 mb-6">Karnataka 572212</p>
                 <a
                   href="https://maps.app.goo.gl/NvcvAGALGAFHiYgA7"
@@ -577,25 +713,33 @@ const Index = () => {
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="mb-8">
-            <h3 className="text-3xl font-bold mb-4">MGM Premium Agricultural Lands</h3>
-            <p className="text-gray-400 text-lg">19 Acres • Available for Sale, Lease & Rent</p>
-            <p className="text-gray-400">Karnataka • Tumkur District • Tiptur Taluk</p>
+            <h3 className="text-3xl font-bold mb-4">
+              MGM Premium Agricultural Lands
+            </h3>
+            <p className="text-gray-400 text-lg">
+              19 Acres • Available for Sale, Lease & Rent
+            </p>
+            <p className="text-gray-400">
+              Karnataka • Tumkur District • Tiptur Taluk
+            </p>
           </div>
           <div className="border-t border-gray-800 pt-8">
             <div className="mb-6">
-              <h4 className="text-xl font-semibold mb-4 text-green-400">Designed and Developed by</h4>
+              <h4 className="text-xl font-semibold mb-4 text-green-400">
+                Designed and Developed by
+              </h4>
               <div className="bg-gray-800 p-6 rounded-lg max-w-md mx-auto">
                 <h5 className="text-lg font-bold mb-3">M Deepak</h5>
                 <div className="space-y-2">
-                  <a 
-                    href="tel:9845326568" 
+                  <a
+                    href="tel:9845326568"
                     className="flex items-center justify-center text-gray-300 hover:text-white transition-colors"
                   >
                     <Phone className="mr-2 h-4 w-4" />
                     9845326568
                   </a>
-                  <a 
-                    href="mailto:mm.deepak2003@gmail.com" 
+                  <a
+                    href="mailto:mm.deepak2003@gmail.com"
                     className="flex items-center justify-center text-gray-300 hover:text-white transition-colors"
                   >
                     <Mail className="mr-2 h-4 w-4" />
@@ -604,7 +748,10 @@ const Index = () => {
                 </div>
               </div>
             </div>
-            <p className="text-gray-500">© {new Date().getFullYear()} Agricultural Lands Sales. All rights reserved.</p>
+            <p className="text-gray-500">
+              © {new Date().getFullYear()} Agricultural Lands Sales. All rights
+              reserved.
+            </p>
           </div>
         </div>
       </footer>
